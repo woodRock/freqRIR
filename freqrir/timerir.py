@@ -20,7 +20,7 @@ def time_rir(receiver, source, room_dimensions, betas, points):
         ValueError : If source and receiver are too close together (i.e. within 0.5 sampling periods).
     """
 
-    pressures = [0]*NPTS
+    pressures = [0]* points
     source_receiver_distance = np.linalg.norm(receiver-source)
     if (source_receiver_distance < 0.5):
         pressures[0] = 1
