@@ -3,23 +3,21 @@ from helper import distance_for_permutations
 
 
 def frequency_rir(receiver, source, room_dimensions, betas, points, frequency):
-    """Generate a room impulse response in the frequency domain. 
+    """ 
+    Calculate room impulse response in the frequency domain. 
 
-    :param receiver: The location of the receiver in the room.
-    :type receiver: array-like of shape (3,)
-    :param source: array-like of shape (3,)
-    :type source: Location of the source in the room.
-    :param room_dimensions: Dimensions of the room.
-    :type room_dimensions: array-like of shape (3,)
-    :param betas: Absorbtion coefficients of the walls.
-    :type betas: array-like of shape (2,3)
-    :param points: Number of points to use for the frequency response.
-    :type points: int
-    :param frequency: Frequency to sample at (i.e. 1000 Hz).
-    :type frequency: int
-    :raises ValueError: Source and reciever are too close to each other (i.e. within 0.5 sample periods).
-    :return: The pressure wave at a given frequency.
-    :rtype: float
+    Args:
+        receiver (list[float]) : Reciever 
+        source (list[float]) : Source
+        room_dimensions (list[float]) : Room dimensions 
+        betas (list[float]) : Absorbtion coefficients. Walls: left, front, floor, right, back, ceiling.
+        points (int) :  Number of points, which determines precisions of bins. 
+
+    Returns:
+        pressure (complex) : A pressure wave in the frequency domain.
+
+    Raises:
+        ValueError : If source and receiver are too close together (i.e. within 0.5 sampling periods).
     """
 
     source_receiver_distance = np.linalg.norm(receiver-source)
