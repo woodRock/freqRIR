@@ -1,4 +1,7 @@
 freqrir module
 ==============   
 
-.. autofunction:: freqrir.frequency_rir
+.. automodule:: freqrir
+   :members:
+   :undoc-members:
+   :show-inheritance:
