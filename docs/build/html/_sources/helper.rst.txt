@@ -1,7 +1,7 @@
 helper module
 =============
 
-.. automodule:: helper
+.. automodule:: freqrir.helper
    :members:
    :undoc-members:
    :show-inheritance:

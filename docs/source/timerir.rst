@@ -1,7 +1,7 @@
 timerir module
 ==============
 
-.. automodule:: freqrir.timerir
+.. automodule:: timerir
    :members:
    :undoc-members:
    :show-inheritance:

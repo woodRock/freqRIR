@@ -70,54 +70,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="module-timerir">
-<span id="timerir-module"></span><h1>timerir module<a class="headerlink" href="#module-timerir" title="Permalink to this headline"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="timerir.high_pass_filter">
-<span class="sig-prename descclassname"><span class="pre">timerir.</span></span><span class="sig-name descname"><span class="pre">high_pass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pressures</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#timerir.high_pass_filter" title="Permalink to this definition"></a></dt>
-<dd><p>High-pass digital filter to wierd behaviour at low frequencies (i.e. 100 Hz).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pressures</strong> (<em>list</em><em>[</em><em>complex</em><em>]</em>) – Pressure wave in the time domain.</p></li>
-<li><p><strong>points</strong> (<em>int</em>) – The number of points.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Pressure wave with frequencies below cutoff removed.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pressures (list[complex])</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="timerir.time_rir">
-<span class="sig-prename descclassname"><span class="pre">timerir.</span></span><span class="sig-name descname"><span class="pre">time_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#timerir.time_rir" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate room impulse response in the time domain.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>receiver</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Reciever</p></li>
-<li><p><strong>source</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Source</p></li>
-<li><p><strong>room_dimensions</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Room dimensions</p></li>
-<li><p><strong>betas</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Absorbtion coefficients. Walls: left, front, floor, right, back, ceiling.</p></li>
-<li><p><strong>points</strong> (<em>int</em>) – Number of points, which determines precisions of bins.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A pressure wave in the time domain.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pressures (list[complex])</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If source and receiver are too close together (i.e. within 0.5 sampling periods).</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <div class="section" id="timerir-module">
+<h1>timerir module<a class="headerlink" href="#timerir-module" title="Permalink to this headline"></a></h1>
 </div>
 
 
