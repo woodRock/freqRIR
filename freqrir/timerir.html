@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>freqrir module &mdash; freqrir 0.1 documentation</title>
+  <title>timerir module &mdash; freqrir 0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,8 +17,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="helper module" href="helper.html" />
-    <link rel="prev" title="freqrir" href="modules.html" /> 
+    <link rel="prev" title="helper module" href="helper.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -39,9 +38,9 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">freqrir</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">freqrir module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="freqrir.html">freqrir module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="helper.html">helper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timerir.html">timerir module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">timerir module</a></li>
 </ul>
 </li>
 </ul>
@@ -61,9 +60,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="modules.html">freqrir</a> &raquo;</li>
-      <li>freqrir module</li>
+      <li>timerir module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/freqrir.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/timerir.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -71,27 +70,47 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="module-freqrir">
-<span id="freqrir-module"></span><h1>freqrir module<a class="headerlink" href="#module-freqrir" title="Permalink to this headline"></a></h1>
+  <div class="section" id="module-timerir">
+<span id="timerir-module"></span><h1>timerir module<a class="headerlink" href="#module-timerir" title="Permalink to this headline"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="freqrir.frequency_rir">
-<span class="sig-prename descclassname"><span class="pre">freqrir.</span></span><span class="sig-name descname"><span class="pre">frequency_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.frequency_rir" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate room impulse response in the frequency domain.</p>
+<dt class="sig sig-object py" id="timerir.high_pass_filter">
+<span class="sig-prename descclassname"><span class="pre">timerir.</span></span><span class="sig-name descname"><span class="pre">high_pass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pressures</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#timerir.high_pass_filter" title="Permalink to this definition"></a></dt>
+<dd><p>High-pass digital filter to wierd behaviour at low frequencies (i.e. 100 Hz).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>receiver</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Reciever location.</p></li>
-<li><p><strong>source</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Source location.</p></li>
-<li><p><strong>room_dimensions</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Room dimensions.</p></li>
+<li><p><strong>pressures</strong> (<em>list</em><em>[</em><em>complex</em><em>]</em>) – Pressure wave in the time domain.</p></li>
+<li><p><strong>points</strong> (<em>int</em>) – The number of points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pressure wave with frequencies below cutoff removed.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pressures (list[complex])</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="timerir.time_rir">
+<span class="sig-prename descclassname"><span class="pre">timerir.</span></span><span class="sig-name descname"><span class="pre">time_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#timerir.time_rir" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate room impulse response in the time domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>receiver</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Reciever</p></li>
+<li><p><strong>source</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Source</p></li>
+<li><p><strong>room_dimensions</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Room dimensions</p></li>
 <li><p><strong>betas</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Absorbtion coefficients. Walls: left, front, floor, right, back, ceiling.</p></li>
 <li><p><strong>points</strong> (<em>int</em>) – Number of points, which determines precisions of bins.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A pressure wave in the frequency domain.</p>
+<dd class="field-even"><p>A pressure wave in the time domain.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pressure (complex)</p>
+<dd class="field-odd"><p>pressures (list[complex])</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>ValueError</strong> – If source and receiver are too close together (i.e. within 0.5 sampling periods).</p>
@@ -105,8 +124,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="modules.html" class="btn btn-neutral float-left" title="freqrir" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="helper.html" class="btn btn-neutral float-right" title="helper module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="helper.html" class="btn btn-neutral float-left" title="helper module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

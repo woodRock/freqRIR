@@ -7,9 +7,9 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, frequency):
     Calculate room impulse response in the frequency domain. 
 
     Args:
-        receiver (list[float]) : Reciever 
-        source (list[float]) : Source
-        room_dimensions (list[float]) : Room dimensions 
+        receiver (list[float]) : Reciever location.
+        source (list[float]) : Source location.
+        room_dimensions (list[float]) : Room dimensions.
         betas (list[float]) : Absorbtion coefficients. Walls: left, front, floor, right, back, ceiling.
         points (int) :  Number of points, which determines precisions of bins. 
 
