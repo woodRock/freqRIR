@@ -14,12 +14,12 @@
 # 2022-02-09 : Allow sphinx to locate source files.
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../freqrir'))
+sys.path.insert(0, os.path.abspath(os.path.join('..','..','freqrir')))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'freqRIR'
+project = 'freqrir'
 copyright = '2022, Jesse Wood'
 author = 'Jesse Wood'
 
