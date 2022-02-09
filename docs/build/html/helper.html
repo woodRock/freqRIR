@@ -71,26 +71,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="module-helper">
-<span id="helper-module"></span><h1>helper module<a class="headerlink" href="#module-helper" title="Permalink to this headline"></a></h1>
+  <div class="section" id="helper-module">
+<h1>helper module<a class="headerlink" href="#helper-module" title="Permalink to this headline"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="helper.distance_for_permutations">
-<span class="sig-prename descclassname"><span class="pre">helper.</span></span><span class="sig-name descname"><span class="pre">distance_for_permutations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_triplet</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper.distance_for_permutations" title="Permalink to this definition"></a></dt>
-<dd><p>Computes the distances between the reciever and the eight image source permutations.</p>
+<dt class="sig sig-object py" id="helper.plot_time_rir">
+<span class="sig-prename descclassname"><span class="pre">helper.</span></span><span class="sig-name descname"><span class="pre">plot_time_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper.plot_time_rir" title="Permalink to this definition"></a></dt>
+<dd><p>Plot room impulse repsonse in the time domain.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>receiver</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Reciever.</p></li>
-<li><p><strong>source</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Source.</p></li>
-<li><p><strong>room_dimensions</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Room dimensions.</p></li>
-<li><p><strong>vector_triplet</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Vector triplet (n,l,m) (Allen 1979).</p></li>
+<li><p><strong>rir</strong> (<em>list</em><em>[</em><em>complex</em><em>]</em>) – A pressure wave in the frequency domain.</p></li>
+<li><p><strong>points</strong> (<em>int</em>) – The number of points.</p></li>
+<li><p><strong>f</strong> (<em>int</em>) – Sampling rate (Hz)</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The distances between the reciever and the eight image source permutations.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>distances (list[float])</p>
 </dd>
 </dl>
 </dd></dl>
@@ -111,16 +104,23 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="helper.plot_time_rir">
-<span class="sig-prename descclassname"><span class="pre">helper.</span></span><span class="sig-name descname"><span class="pre">plot_time_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper.plot_time_rir" title="Permalink to this definition"></a></dt>
-<dd><p>Plot room impulse repsonse in the time domain.</p>
+<dt class="sig sig-object py" id="helper.distance_for_permutations">
+<span class="sig-prename descclassname"><span class="pre">helper.</span></span><span class="sig-name descname"><span class="pre">distance_for_permutations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_triplet</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper.distance_for_permutations" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the distances between the reciever and the eight image source permutations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rir</strong> (<em>list</em><em>[</em><em>complex</em><em>]</em>) – A pressure wave in the frequency domain.</p></li>
-<li><p><strong>points</strong> (<em>int</em>) – The number of points.</p></li>
-<li><p><strong>f</strong> (<em>int</em>) – Sampling rate (Hz)</p></li>
+<li><p><strong>receiver</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Reciever.</p></li>
+<li><p><strong>source</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Source.</p></li>
+<li><p><strong>room_dimensions</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Room dimensions.</p></li>
+<li><p><strong>vector_triplet</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Vector triplet (n,l,m) (Allen 1979).</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The distances between the reciever and the eight image source permutations.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>distances (list[float])</p>
 </dd>
 </dl>
 </dd></dl>

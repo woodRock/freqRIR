@@ -1,4 +1,0 @@
-freqrir module
-==============   
-
-.. autofunction:: freqrir.frequency_rir
