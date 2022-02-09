@@ -1,3 +1,4 @@
 sphinx==4.3.0
 sphinx_rtd_theme==1.0.0
 numpy==1.19.5
+matplotlib==3.3.4
