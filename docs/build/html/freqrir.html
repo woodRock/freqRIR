@@ -17,7 +17,6 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="helper module" href="helper.html" />
     <link rel="prev" title="freqrir" href="modules.html" /> 
 </head>
 
@@ -40,8 +39,6 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">freqrir</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">freqrir module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="helper.html">helper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timerir.html">timerir module</a></li>
 </ul>
 </li>
 </ul>
@@ -71,8 +68,132 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="freqrir-module">
-<h1>freqrir module<a class="headerlink" href="#freqrir-module" title="Permalink to this headline"></a></h1>
+  <div class="section" id="module-freqrir">
+<span id="freqrir-module"></span><h1>freqrir module<a class="headerlink" href="#module-freqrir" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="freqrir.distance_for_permutations">
+<span class="sig-prename descclassname"><span class="pre">freqrir.</span></span><span class="sig-name descname"><span class="pre">distance_for_permutations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_triplet</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.distance_for_permutations" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the distances between the reciever and the eight image source permutations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>receiver</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Reciever.</p></li>
+<li><p><strong>source</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Source.</p></li>
+<li><p><strong>room_dimensions</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Room dimensions.</p></li>
+<li><p><strong>vector_triplet</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Vector triplet (n,l,m) (Allen 1979).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The distances between the reciever and the eight image source permutations.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>distances (list[float])</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="freqrir.frequency_rir">
+<span class="sig-prename descclassname"><span class="pre">freqrir.</span></span><span class="sig-name descname"><span class="pre">frequency_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.frequency_rir" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate room impulse response in the frequency domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>receiver</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Reciever location.</p></li>
+<li><p><strong>source</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Source location.</p></li>
+<li><p><strong>room_dimensions</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Room dimensions.</p></li>
+<li><p><strong>betas</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Absorbtion coefficients. Walls: left, front, floor, right, back, ceiling.</p></li>
+<li><p><strong>points</strong> (<em>int</em>) – Number of points, which determines precisions of bins.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A pressure wave in the frequency domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pressure (complex)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If source and receiver are too close together (i.e. within 0.5 sampling periods).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="freqrir.high_pass_filter">
+<span class="sig-prename descclassname"><span class="pre">freqrir.</span></span><span class="sig-name descname"><span class="pre">high_pass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pressures</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.high_pass_filter" title="Permalink to this definition"></a></dt>
+<dd><p>High-pass digital filter to wierd behaviour at low frequencies (i.e. 100 Hz).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pressures</strong> (<em>list</em><em>[</em><em>complex</em><em>]</em>) – Pressure wave in the time domain.</p></li>
+<li><p><strong>points</strong> (<em>int</em>) – The number of points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pressure wave with frequencies below cutoff removed.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pressures (list[complex])</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="freqrir.plot_frequency_rir">
+<span class="sig-prename descclassname"><span class="pre">freqrir.</span></span><span class="sig-name descname"><span class="pre">plot_frequency_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.plot_frequency_rir" title="Permalink to this definition"></a></dt>
+<dd><p>Plot room impulse repsonse in the frequency domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rir</strong> (<em>list</em><em>[</em><em>complex</em><em>]</em>) – A pressure wave in the frequency domain.</p></li>
+<li><p><strong>points</strong> (<em>int</em>) – The number of points.</p></li>
+<li><p><strong>f</strong> (<em>int</em>) – Sampling rate (Hz)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="freqrir.plot_time_rir">
+<span class="sig-prename descclassname"><span class="pre">freqrir.</span></span><span class="sig-name descname"><span class="pre">plot_time_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.plot_time_rir" title="Permalink to this definition"></a></dt>
+<dd><p>Plot room impulse repsonse in the time domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rir</strong> (<em>list</em><em>[</em><em>complex</em><em>]</em>) – A pressure wave in the frequency domain.</p></li>
+<li><p><strong>points</strong> (<em>int</em>) – The number of points.</p></li>
+<li><p><strong>f</strong> (<em>int</em>) – Sampling rate (Hz)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="freqrir.time_rir">
+<span class="sig-prename descclassname"><span class="pre">freqrir.</span></span><span class="sig-name descname"><span class="pre">time_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.time_rir" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate room impulse response in the time domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>receiver</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Reciever</p></li>
+<li><p><strong>source</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Source</p></li>
+<li><p><strong>room_dimensions</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Room dimensions</p></li>
+<li><p><strong>betas</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Absorbtion coefficients. Walls: left, front, floor, right, back, ceiling.</p></li>
+<li><p><strong>points</strong> (<em>int</em>) – Number of points, which determines precisions of bins.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A pressure wave in the time domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pressures (list[complex])</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If source and receiver are too close together (i.e. within 0.5 sampling periods).</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
@@ -80,7 +201,6 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="modules.html" class="btn btn-neutral float-left" title="freqrir" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="helper.html" class="btn btn-neutral float-right" title="helper module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
