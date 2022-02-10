@@ -5,3 +5,4 @@ freqrir
    :maxdepth: 4
 
    freqrir
+   test
