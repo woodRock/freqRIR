@@ -1,5 +1,5 @@
 import numpy as np
-from helper import distance_for_permutations, meters_to_sample_periods, sample_period_to_feet, sample_period_to_meters
+from freqrir.helper import distance_for_permutations, sample_period_to_meters
 
 
 def frequency_rir(receiver, source, room_dimensions, betas, points, sampling_frequency, frequency, c=304.8, T=1E-4):
