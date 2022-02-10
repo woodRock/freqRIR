@@ -2,22 +2,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def sample_period_to_meters(x, c=304.8, T=1E-4):
+def sample_period_to_meters(x, sample_rate, c=304.8):
     """ Convert a measurement from sample periods to meters.
 
     Args:
         x (float): A measurement in sample periods.
+        sample_rate (int): Sampling rate (Hz).
         c (float): Speed of sound (m/s). Defaults to 304.8 m/s (i.e. 1 ft/ms).
-        T (float): Sampling period (s). Defaults to 1E-4 s (i.e. 0.1 ms).
 
     Returns:
         x (float): A measurement in meters (m).
 
     Examples:
-        >>> sample_period_to_meters(80) # 80 sample periods (s)
-        2.4383 # meters (m)
+        >>> sample_period_to_meters(80, 8000) # 80 sample periods (s) at 8 kHZ
+        3.048 # meters (m)
     """
-    x = x * c * T
+    sample_period = 1 / sample_rate
+    x = x * c * sample_period
     return x
 
 
@@ -52,8 +53,8 @@ def sample_period_to_feet(x, sample_frequency, c=1000):
         x (float): A measurement in meters (feet).
 
     Examples:
-        >>> sample_period_to_feet(80) # 80 sample periods (s)
-        8000.0 # meters (m)
+        >>> sample_period_to_feet(80,8000) # 80 sample periods (s)
+        10 # ft
     """
     sample_period = (1 /
                      sample_frequency)

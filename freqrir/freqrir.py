@@ -1,18 +1,19 @@
 import numpy as np
-from helper import distance_for_permutations, meters_to_sample_periods, sample_period_to_meters
+from helper import distance_for_permutations, meters_to_sample_periods, sample_period_to_feet, sample_period_to_meters
 
 
-def frequency_rir(receiver, source, room_dimensions, betas, points, frequency, c=304.8, T=1E-4):
-    """ 
-    Calculate room impulse response in the frequency domain. 
+def frequency_rir(receiver, source, room_dimensions, betas, points, sampling_frequency, frequency, c=304.8, T=1E-4):
+    """
+    Calculate room impulse response in the frequency domain.
 
     Args:
         receiver (list[float] with shape (3,)) : Reciever location in sample periods (s).
         source (list[float] with shape(3,)) : Source location in sample periods (s).
         room_dimensions (list[float] with shape (3,)) : Room dimensions in sample periods (s).
         betas (float np-array with shape (3,2)) : Absorbtion coefficients. Walls: left, right, front, back, floor, ceiling.
-        points (int) :  Number of points, which determines precisions of bins. 
-
+        points (int) :  Number of points, which determines precisions of bins.
+        sampling_frequency (float) : Sampling frequency or sampling rate (Hz).
+        frequency (float) : Frequency of interest (Hz).
         c (float, optional) : Speed of sound (m/s). Defaults to 304.8 m/s (i.e. 1 ft/ms) (Allen 1979).
         T (float, optional) : Sampling period (s). Defaults to 1E-4 s (i.e. 0.1 ms) (Allen 1979).
 
@@ -29,6 +30,10 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, frequency, c
 
     w = 2 * np.pi * frequency
     pressure = 0 + 0j
+
+    max_length = (points/(8 * 1000))  # Seconds (s)
+    # max distance (m) = Speed of sound (m/s) * max length (s)
+    max_d = c * max_length
 
     n1 = int(np.ceil(points / (room_dimensions[0]*2)))
     n2 = int(np.ceil(points / (room_dimensions[1]*2)))
@@ -50,15 +55,12 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, frequency, c
                             # Distance in sample periods
                             id = delp[io-1]
                             # Distance in meters d(u,l).
-                            d = sample_period_to_meters(id)
-                            T = d / c  # Time delay T(.) (ms).
+                            d = sample_period_to_meters(
+                                id, sampling_frequency)
+                            T = d / c  # Time delay T(.) (s).
 
-                            id += 1
-
-                            if (id > points):
-                                continue
-
-                            image_count += 1
+                            if (d > max_d):
+                                break
 
                             # Attenuation factor A(.).
                             A = betas[0][0]**(np.abs(nx-l))
@@ -69,9 +71,11 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, frequency, c
                             A *= betas[2][1]**(np.abs(nz))
                             A /= 4 * np.pi * d
 
-                            pressure += A * np.exp(- 1j * w * T)
+                            pressure += A * np.exp(-1j * w * T)
+                            image_count += 1
 
     print(f"Image count: {image_count}")
+    print(f"room impulse repsonse: {pressure} Pa")
     return pressure
 
 
@@ -81,9 +85,9 @@ if __name__ == "__main__":
     receiver = np.array([50, 10, 60])
     room_dimensions = np.array([80, 120, 100])
     betas = np.reshape([0.9, 0.9, 0.9, 0.9, 0.7, 0.7], (3, 2))
+    sampling_frequency = 8000
     frequency = 1000  # Hz
     points = 2048
 
     rir = frequency_rir(receiver, source, room_dimensions,
-                        betas, points, frequency)
-    print(rir)
+                        betas, points, sampling_frequency, frequency)

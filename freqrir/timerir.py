@@ -1,9 +1,8 @@
 import numpy as np
 from helper import distance_for_permutations, plot_time_rir
-from helper import sample_period_to_feet
 
 
-def time_rir(receiver, source, room_dimensions, betas, points, sample_frequency):
+def time_rir(receiver, source, room_dimensions, betas, points, sample_frequency, c=304.8):
     """
     Calculate room impulse response in the time domain.
 
@@ -13,7 +12,8 @@ def time_rir(receiver, source, room_dimensions, betas, points, sample_frequency)
         room_dimensions (list[float] with shape (3,)) : Room dimensions in sample periods (s).
         betas (float np-array with shape (3,2)) : Absorbtion coefficients. Walls: left, right, front, back, floor, ceiling.
         points (int) :  Number of points, which determines precisions of bins.
-        frequency (float) : Sampling frequency or sampling rate (Hz).
+        sample_frequency (float) : Sampling frequency or sampling rate (Hz).
+        c (float, optional) : Speed of sound (m/s). Defaults to 304.8 m/s (i.e. 1 ft/ms) (Allen 1979).
 
     Returns:
         pressures (list[complex]) : A pressure wave in the time domain.
@@ -68,7 +68,6 @@ def time_rir(receiver, source, room_dimensions, betas, points, sample_frequency)
 
     pressures = high_pass_filter(pressures, points, sample_frequency)
     pressures = np.array(pressures)
-    pressures = sample_period_to_feet(pressures, sample_frequency)
     print(f"Image count: {image_count}")
     return pressures
 
@@ -86,7 +85,6 @@ def high_pass_filter(pressures, points, sample_frequency):
     """
 
     F = 0.01 * sample_frequency  # 0.01 of the sampling frequency (Allen 1979).
-    print(f"F: {F}")
     W = 2 * np.pi * F  # Frequency variable (radians).
     T = 1E-4  # Time (s)
     R1 = np.exp(-W*T)
