@@ -5,15 +5,15 @@
 
 Generate a room impuse response in the frequency domain. 
 
+## Documentation
+
+Read the documentation [Docs](https://freqrir.readthedocs.io/en/latest/index.html)
+
 ## Time domain 
 
 Plot a typical impulse repsonse for a room 80 x 12 x 100 sample lengths long. Wall reflection coefficients were all 0.9, ceiling and floor coefficients were 0.7. Source and receiver were at (30, 100, 40) amd (50, 10, 60) sample periods [1].
 
 ![Room impulse repsonse in time-domain](./timerir.png)
-
-## Documentation
-
-Read the documentation [Docs](https://freqrir.readthedocs.io/en/latest/index.html)
 
 ## References 
 
