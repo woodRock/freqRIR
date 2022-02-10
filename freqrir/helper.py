@@ -2,6 +2,36 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+def distance_for_permutations(receiver, source, room_dimensions, vector_triplet):
+    """
+    Computes the distances between the reciever and the eight image source permutations.
+
+    Args:
+        receiver (list[float]): Reciever position.
+        source (list[float]): Source position.
+        room_dimensions (list[float]): Room dimensions.
+        vector_triplet (list[float]): Vector triplet (n,l,m) (Allen 1979).
+
+    Returns:
+        distances (list[float] with shape (8,)): The distances between the reciever and the eight image source permutations.
+
+    Examples:
+        >>> distance_for_permutations(np.array([0,0,0]), np.array([1,1,1]), np.array([5,5,5]), np.array([0,0,0]))[0]
+        1.7320508075688772 # Take the first element of the list.
+    """
+    # Add in mean radius to eight vectors to get total delay.
+    r2l = 2 * np.array(vector_triplet) * np.array(room_dimensions)
+    distances = []
+    for l in range(-1, 2, 2):
+        for j in range(-1, 2, 2):
+            for k in range(-1, 2, 2):
+                # l == j == j == -1 is the original source position.
+                rp = receiver + np.array([l, j, k]) * source
+                d = np.linalg.norm(r2l - rp)
+                distances.append(d)
+    return distances
+
+
 def sample_period_to_meters(x, sample_rate, c=304.8):
     """ Convert a measurement from sample periods to meters.
 
@@ -63,32 +93,6 @@ def sample_period_to_feet(x, sample_frequency, c=1000):
     return x
 
 
-def distance_for_permutations(receiver, source, room_dimensions, vector_triplet):
-    """
-    Computes the distances between the reciever and the eight image source permutations.
-
-    Args:
-        receiver (list[float]): Reciever position.
-        source (list[float]): Source position.
-        room_dimensions (list[float]): Room dimensions.
-        vector_triplet (list[float]): Vector triplet (n,l,m) (Allen 1979).
-
-    Returns:
-        distances (list[float] with shape (8,)): The distances between the reciever and the eight image source permutations.
-    """
-    # Add in mean radius to eight vectors to get total delay.
-    r2l = 2 * np.array(vector_triplet) * np.array(room_dimensions)
-    distances = []
-    for l in range(-1, 2, 2):
-        for j in range(-1, 2, 2):
-            for k in range(-1, 2, 2):
-                # l == j == j == -1 is the original source position.
-                rp = receiver + np.array([l, j, k]) * source
-                d = np.linalg.norm(r2l - rp)
-                distances.append(d)
-    return distances
-
-
 def plot_time_rir(rir, points, f, save=False):
     """
     Plot room impulse repsonse in the time domain.
@@ -99,7 +103,6 @@ def plot_time_rir(rir, points, f, save=False):
         f (int) : Sampling rate (Hz)
         save (bool) : Whether to save the plot.
     """
-
     length = points / 8  # Length of sample (ms)
     t = np.linspace(0, length, points)
     plt.figure(figsize=(4, 4))
@@ -128,8 +131,7 @@ def plot_frequency_rir(rir, points, frequency, save=False):
         frequency (int) : Sampling rate (Hz)
         save (bool) : Whether to save the plot.
     """
-
-    fs = np.linspace(0, frequency, 2048)
+    fs = np.linspace(0, frequency, points)
     plt.figure(figsize=(4, 4))
     plt.stem(fs, rir, 'b', markerfmt=" ", basefmt="-b")
     plt.xlabel("Frequency (Hz)")

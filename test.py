@@ -3,7 +3,7 @@ import numpy as np
 from freqrir.helper import sample_period_to_meters, meters_to_sample_periods, sample_period_to_feet, distance_for_permutations
 
 
-class TestHelper(unittest.TestCase):
+class UnitConversions(unittest.TestCase):
     def test_sample_period_to_meters(self):
         """ Test conversion from sample periods to meters. """
         s = sample_period_to_meters(80, 8000)
@@ -20,6 +20,8 @@ class TestHelper(unittest.TestCase):
         f = sample_period_to_feet(80, 8000)
         assert f == 10, "Sample period to feet conversion failed. {f} != 10 ft"
 
+
+class DistanceForPermuations(unittest.TestCase):
     def test_distance_for_permutations(self):
         """ Test the distance is calculated correctly for permutations of an image source. """
         room_dimensions = np.array([5, 5, 5])
@@ -33,7 +35,7 @@ class TestHelper(unittest.TestCase):
         assert len(
             d) == 8, "Eight permutations of an image source including the orignal."
         assert first == np.sqrt(
-            3), "distance_for_permutations() failed. {first} != np.sqrt(3)"
+            3), f"Distance between source (at the origin) and reciever (at unit distance) was  {first} != np.sqrt(3)"
         assert np.argmin(
             d) == 0, "First distance should be the shortest distance."
 
