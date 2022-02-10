@@ -52,12 +52,13 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, sampling_fre
                     for j in range(0, 2):
                         for k in range(0, 2):
                             io += 1
-                            # Distance in sample periods
+                            # Distances between images and reciever in sample periods.
                             id = delp[io-1]
                             # Distance in meters d(u,l).
                             d = sample_period_to_meters(
                                 id, sampling_frequency)
-                            T = d / c  # Time delay T(.) (s).
+                            # Time delay T(.) (s).
+                            T = d / c
 
                             if (d > max_d):
                                 break

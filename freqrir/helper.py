@@ -22,7 +22,7 @@ def sample_period_to_meters(x, sample_rate, c=304.8):
     return x
 
 
-def meters_to_sample_periods(x, c=304.8, T=1E-4):
+def meters_to_sample_periods(x, sample_rate, c=304.8):
     """ Convert a measurement from meters to sample periods.
 
     Args:
@@ -34,10 +34,11 @@ def meters_to_sample_periods(x, c=304.8, T=1E-4):
         x (float): A measurement in sample periods (s).
 
     Examples:
-        >>> meters_to_sample_periods(1.2) # 1.2 meters (m)
-        39.370078740157474 # sample periods (s)
+        >>> meters_to_sample_periods(3.048, 8000) # 1.2 meters (m)
+        80 # sample periods (s)
     """
-    x = x / (c * T)
+    sample_period = 1 / sample_rate
+    x = x / (c * sample_period)
     return x
 
 
