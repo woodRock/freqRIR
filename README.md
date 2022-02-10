@@ -1,5 +1,6 @@
 # freqRIR 
 
+[![Documentation Status](https://readthedocs.org/projects/freqrir/badge/?version=latest)](https://freqrir.readthedocs.io/en/latest/?badge=latest)
 [![Python package](https://github.com/woodRock/freqRIR/actions/workflows/test.yml/badge.svg)](https://github.com/woodRock/freqRIR/actions/workflows/test.yml)
 
 Generate a room impuse response in the frequency domain. 
