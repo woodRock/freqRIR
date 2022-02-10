@@ -5,14 +5,17 @@ from helper import distance_for_permutations
 def time_rir(receiver, source, room_dimensions, betas, points):
     """ 
     Calculate room impulse response in the time domain. 
+    
     Args:
         receiver (list[float]) : Reciever 
         source (list[float]) : Source
         room_dimensions (list[float]) : Room dimensions 
         betas (list[float]) : Absorbtion coefficients. Walls: left, front, floor, right, back, ceiling.
         points (int) :  Number of points, which determines precisions of bins. 
+    
     Returns:
         pressures (list[complex]) : A pressure wave in the time domain.
+    
     Raises:
         ValueError : If source and receiver are too close together (i.e. within 0.5 sampling periods).
     """
@@ -66,6 +69,8 @@ def time_rir(receiver, source, room_dimensions, betas, points):
 
     pressures = high_pass_filter(pressures, points)
     # Convert from sample periods to proper units.
+    C = 343.  # Speed of sound (m/s)
+    T = 0.1  # Time (ms)
     pressures = 2 * C * T * np.array(pressures)
     return pressures
 
@@ -92,7 +97,7 @@ def high_pass_filter(pressures, points):
     Y1 = 0
     Y2 = 0
     Y0 = 0
-    for I in range(0, NPTS):
+    for I in range(0, points):
         X0 = pressures[I]
         pressures[I] = Y0 + A1 * Y1 + A2 * Y2
         Y2 = Y1
