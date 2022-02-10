@@ -1,5 +1,6 @@
 import numpy as np
 from helper import distance_for_permutations, plot_time_rir
+from helper import sample_period_to_feet_per_ms
 
 
 def time_rir(receiver, source, room_dimensions, betas, points):
@@ -7,10 +8,10 @@ def time_rir(receiver, source, room_dimensions, betas, points):
     Calculate room impulse response in the time domain.
 
     Args:
-        receiver (list[float]) : Reciever
-        source (list[float]) : Source
-        room_dimensions (list[float]) : Room dimensions
-        betas (list[float]) : Absorbtion coefficients. Walls: left, front, floor, right, back, ceiling.
+        receiver (list[float] with shape (3,)) : Reciever location in sample periods (s).
+        source (list[float] with shape(3,)) : Source location in sample periods (s).
+        room_dimensions (list[float] with shape (3,)) : Room dimensions in sample periods (s).
+        betas (float np-array with shape (3,2)) : Absorbtion coefficients. Walls: left, right, front, back, floor, ceiling.
         points (int) :  Number of points, which determines precisions of bins.
 
     Returns:
@@ -43,42 +44,45 @@ def time_rir(receiver, source, room_dimensions, betas, points):
                 for L in range(0, 2):
                     for J in range(0, 2):
                         for K in range(0, 2):
-                            IO += 1
+
                             # Impulse delay times 8, time (ms).
-                            ID = int(np.ceil(DELP[IO-1]) + .5)
+                            ID = int(np.ceil(DELP[IO]) + .5)
                             # ID = int(np.ceil((DELP[IO-1] - 59)))
 
                             FDM1 = ID
                             ID += 1
 
                             # Cascade break
-                            if (ID > points):
-                                break
+                            if (ID + 1 > points):
+                                continue
 
                             image_count += 1
 
                             GID = betas[0][0]**(np.abs(NX-L))
-                            GID *= betas[1][0]**(np.abs(NX))
-                            GID *= betas[0][1]**(np.abs(NY-J))
+                            GID *= betas[0][1]**(np.abs(NX))
+                            GID *= betas[1][0]**(np.abs(NY-J))
                             GID *= betas[1][1]**(np.abs(NY))
-                            GID *= betas[0][2]**(np.abs(NZ-K))
-                            GID *= betas[1][2]**(np.abs(NZ))
+                            GID *= betas[2][0]**(np.abs(NZ-K))
+                            GID *= betas[2][1]**(np.abs(NZ))
                             GID /= FDM1
-                            pressures[ID-1] = pressures[ID-1] + GID
+                            pressures[ID] = pressures[ID] + GID
 
-                        # Cascade break
-                        if (ID > points):
-                            break
-                    # Cascade break
-                    if (ID > points):
-                        break
+                            IO += 1
+
+                    #     # Cascade break
+                    #     if (ID + 1 > points):
+                    #         break
+                    # # Cascade break
+                    # if (ID + 1 > points):
+                    #     break
 
     pressures = high_pass_filter(pressures, points)
     # Convert from sample periods to proper units.
     C = 343.  # Speed of sound (m/s)
     T = 0.1  # Time (ms)
     print(f"Image count: {image_count}")
-    pressures = C * T * np.array(pressures)
+    pressures = np.array(pressures)
+    pressures = sample_period_to_feet_per_ms(pressures)
     return pressures
 
 
@@ -120,7 +124,8 @@ if __name__ == "__main__":
     room_dimensions = np.array([80, 120, 100])
     source = np.array([30, 100, 40])
     receiver = np.array([50, 10, 60])
-    betas = np.reshape([0.9, 0.9, 0.7, 0.9, 0.9, 0.7], (2, 3))
+    betas = np.reshape([0.9, 0.9, 0.9, 0.9, 0.7, 0.7], (3, 2))
+    print(f"betas {betas}")
     frequency = 8000  # Sampling rate (Hz)
     points = 2048  # Number of points.
     rir = time_rir(receiver, source, room_dimensions,

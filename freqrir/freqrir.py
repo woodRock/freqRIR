@@ -7,10 +7,10 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, frequency, c
     Calculate room impulse response in the frequency domain. 
 
     Args:
-        receiver (list[float]) : Reciever location in sample periods (s).
-        source (list[float]) : Source location in sample periods (s).
-        room_dimensions (list[float]) : Room dimensions in sample periods (s).
-        betas (list[float]) : Absorbtion coefficients. Walls: left, front, floor, right, back, ceiling.
+        receiver (list[float] with shape (3,)) : Reciever location in sample periods (s).
+        source (list[float] with shape(3,)) : Source location in sample periods (s).
+        room_dimensions (list[float] with shape (3,)) : Room dimensions in sample periods (s).
+        betas (float np-array with shape (3,2)) : Absorbtion coefficients. Walls: left, right, front, back, floor, ceiling.
         points (int) :  Number of points, which determines precisions of bins. 
 
         c (float, optional) : Speed of sound (m/s). Defaults to 304.8 m/s (i.e. 1 ft/ms) (Allen 1979).
@@ -60,11 +60,11 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, frequency, c
 
                             # Attenuation factor A(.).
                             A = betas[0][0]**(np.abs(NX-L))
-                            A *= betas[1][0]**(np.abs(NX))
-                            A *= betas[0][1]**(np.abs(NY-J))
+                            A *= betas[0][1]**(np.abs(NX))
+                            A *= betas[1][0]**(np.abs(NY-J))
                             A *= betas[1][1]**(np.abs(NY))
-                            A *= betas[0][2]**(np.abs(NZ-K))
-                            A *= betas[1][2]**(np.abs(NZ))
+                            A *= betas[2][0]**(np.abs(NZ-K))
+                            A *= betas[2][1]**(np.abs(NZ))
                             A /= 4 * np.pi * d
 
                             pressure += A * np.exp(- 1j * w * T)
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     source = np.array([30, 100, 40])
     receiver = np.array([50, 10, 60])
     room_dimensions = np.array([80, 120, 100])
-    betas = np.reshape([0.9, 0.9, 0.7, 0.9, 0.9, 0.7], (2, 3))
+    betas = np.reshape([0.9, 0.9, 0.9, 0.9, 0.7, 0.7], (3, 2))
     frequency = 1000  # Hz
     points = 2048
 
