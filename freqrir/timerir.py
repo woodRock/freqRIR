@@ -52,7 +52,6 @@ def time_rir(receiver, source, room_dimensions, betas, points, sample_frequency)
                             fdm1 = id
                             id += 1
 
-                            # Cascade break
                             if (id > points):
                                 continue
 
@@ -66,13 +65,6 @@ def time_rir(receiver, source, room_dimensions, betas, points, sample_frequency)
                             gid *= betas[2][1]**(np.abs(nz))
                             gid /= fdm1
                             pressures[id-1] = pressures[id-1] + gid
-
-                        # Cascade break
-                        if (id > points):
-                            continue
-                    # Cascade break
-                    if (id > points):
-                        continue
 
     pressures = high_pass_filter(pressures, points, sample_frequency)
     pressures = np.array(pressures)

@@ -53,6 +53,8 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, frequency, c
                             d = sample_period_to_meters(id)
                             T = d / c  # Time delay T(.) (ms).
 
+                            id += 1
+
                             if (id > points):
                                 continue
 
@@ -69,10 +71,6 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, frequency, c
 
                             pressure += A * np.exp(- 1j * w * T)
 
-                    #     if (id > points):
-                    #         break
-                    # if (id > points):
-                    #     break
     print(f"Image count: {image_count}")
     return pressure
 
