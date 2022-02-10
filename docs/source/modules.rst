@@ -5,4 +5,5 @@ freqrir
    :maxdepth: 4
 
    freqrir
-   test
+   helper
+   timerir

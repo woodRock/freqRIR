@@ -1,7 +1,7 @@
-test module
-===========
+timerir module
+==============
 
-.. automodule:: test
+.. automodule:: timerir
    :members:
    :undoc-members:
    :show-inheritance:
