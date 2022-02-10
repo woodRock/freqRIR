@@ -30,49 +30,49 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, frequency, c
     w = 2 * np.pi * frequency
     pressure = 0 + 0j
 
-    N1 = int(np.ceil(points / (room_dimensions[0]*2)))
-    N2 = int(np.ceil(points / (room_dimensions[1]*2)))
-    N3 = int(np.ceil(points / (room_dimensions[2]*2)))
+    n1 = int(np.ceil(points / (room_dimensions[0]*2)))
+    n2 = int(np.ceil(points / (room_dimensions[1]*2)))
+    n3 = int(np.ceil(points / (room_dimensions[2]*2)))
 
     image_count = 0
 
-    for NX in range(-N1, N1+1):
-        for NY in range(-N2, N2+1):
-            for NZ in range(-N3, N3+1):
-                vector_triplet = np.array([NX, NY, NZ])
-                DELP = distance_for_permutations(
+    for nx in range(-n1, n1+1):
+        for ny in range(-n2, n2+1):
+            for nz in range(-n3, n3+1):
+                vector_triplet = np.array([nx, ny, nz])
+                delp = distance_for_permutations(
                     receiver, source, room_dimensions, vector_triplet)
-                IO = 0
-                for L in range(0, 2):
-                    for J in range(0, 2):
-                        for K in range(0, 2):
+                io = 0
+                for l in range(0, 2):
+                    for j in range(0, 2):
+                        for k in range(0, 2):
+                            io += 1
                             # Distance in sample periods
-                            id = DELP[IO]
-                            # id = DELP[IO]
+                            id = delp[io-1]
                             # Distance in meters d(u,l).
                             d = sample_period_to_meters(id)
                             T = d / c  # Time delay T(.) (ms).
 
                             if (id > points):
-                                break
+                                continue
 
                             image_count += 1
 
                             # Attenuation factor A(.).
-                            A = betas[0][0]**(np.abs(NX-L))
-                            A *= betas[0][1]**(np.abs(NX))
-                            A *= betas[1][0]**(np.abs(NY-J))
-                            A *= betas[1][1]**(np.abs(NY))
-                            A *= betas[2][0]**(np.abs(NZ-K))
-                            A *= betas[2][1]**(np.abs(NZ))
+                            A = betas[0][0]**(np.abs(nx-l))
+                            A *= betas[0][1]**(np.abs(nx))
+                            A *= betas[1][0]**(np.abs(ny-j))
+                            A *= betas[1][1]**(np.abs(ny))
+                            A *= betas[2][0]**(np.abs(nz-k))
+                            A *= betas[2][1]**(np.abs(nz))
                             A /= 4 * np.pi * d
 
                             pressure += A * np.exp(- 1j * w * T)
-                            IO += 1
-                        if (id > points):
-                            break
-                    if (id > points):
-                        break
+
+                    #     if (id > points):
+                    #         break
+                    # if (id > points):
+                    #     break
     print(f"Image count: {image_count}")
     return pressure
 

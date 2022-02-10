@@ -1,9 +1,9 @@
 import numpy as np
 from helper import distance_for_permutations, plot_time_rir
-from helper import sample_period_to_feet_per_ms
+from helper import sample_period_to_feet
 
 
-def time_rir(receiver, source, room_dimensions, betas, points):
+def time_rir(receiver, source, room_dimensions, betas, points, sample_frequency):
     """
     Calculate room impulse response in the time domain.
 
@@ -13,6 +13,7 @@ def time_rir(receiver, source, room_dimensions, betas, points):
         room_dimensions (list[float] with shape (3,)) : Room dimensions in sample periods (s).
         betas (float np-array with shape (3,2)) : Absorbtion coefficients. Walls: left, right, front, back, floor, ceiling.
         points (int) :  Number of points, which determines precisions of bins.
+        frequency (float) : Sampling frequency or sampling rate (Hz).
 
     Returns:
         pressures (list[complex]) : A pressure wave in the time domain.
@@ -27,78 +28,73 @@ def time_rir(receiver, source, room_dimensions, betas, points):
         pressures[0] = 1
         raise ValueError("Source and reciever are too close to eachother.")
 
-    N1 = int(np.ceil(points / (room_dimensions[0]*2)))
-    N2 = int(np.ceil(points / (room_dimensions[1]*2)))
-    N3 = int(np.ceil(points / (room_dimensions[2]*2)))
+    n1 = int(np.ceil(points / (room_dimensions[0]*2)))
+    n2 = int(np.ceil(points / (room_dimensions[1]*2)))
+    n3 = int(np.ceil(points / (room_dimensions[2]*2)))
 
     image_count = 0
 
-    for NX in range(-N1, N1+1):
-        for NY in range(-N2, N2+1):
-            for NZ in range(-N3, N3+1):
-                vector_triplet = np.array([NX, NY, NZ])
-                DELP = distance_for_permutations(
+    for nx in range(-n1, n1+1):
+        for ny in range(-n2, n2+1):
+            for nz in range(-n3, n3+1):
+                vector_triplet = np.array([nx, ny, nz])
+                delp = distance_for_permutations(
                     receiver, source, room_dimensions, vector_triplet)
                 # Image index for 8 image sources reflection (and original).
-                IO = 0
-                for L in range(0, 2):
-                    for J in range(0, 2):
-                        for K in range(0, 2):
-
+                io = 0
+                for l in range(0, 2):
+                    for j in range(0, 2):
+                        for k in range(0, 2):
+                            io += 1
                             # Impulse delay times 8, time (ms).
-                            ID = int(np.ceil(DELP[IO]) + .5)
-                            # ID = int(np.ceil((DELP[IO-1] - 59)))
+                            id = int(np.ceil(delp[io-1]) + .5)
 
-                            FDM1 = ID
-                            ID += 1
+                            fdm1 = id
+                            id += 1
 
                             # Cascade break
-                            if (ID + 1 > points):
+                            if (id > points):
                                 continue
 
                             image_count += 1
 
-                            GID = betas[0][0]**(np.abs(NX-L))
-                            GID *= betas[0][1]**(np.abs(NX))
-                            GID *= betas[1][0]**(np.abs(NY-J))
-                            GID *= betas[1][1]**(np.abs(NY))
-                            GID *= betas[2][0]**(np.abs(NZ-K))
-                            GID *= betas[2][1]**(np.abs(NZ))
-                            GID /= FDM1
-                            pressures[ID] = pressures[ID] + GID
+                            gid = betas[0][0]**(np.abs(nx-l))
+                            gid *= betas[0][1]**(np.abs(nx))
+                            gid *= betas[1][0]**(np.abs(ny-j))
+                            gid *= betas[1][1]**(np.abs(ny))
+                            gid *= betas[2][0]**(np.abs(nz-k))
+                            gid *= betas[2][1]**(np.abs(nz))
+                            gid /= fdm1
+                            pressures[id-1] = pressures[id-1] + gid
 
-                            IO += 1
+                        # Cascade break
+                        if (id > points):
+                            continue
+                    # Cascade break
+                    if (id > points):
+                        continue
 
-                    #     # Cascade break
-                    #     if (ID + 1 > points):
-                    #         break
-                    # # Cascade break
-                    # if (ID + 1 > points):
-                    #     break
-
-    pressures = high_pass_filter(pressures, points)
-    # Convert from sample periods to proper units.
-    C = 343.  # Speed of sound (m/s)
-    T = 0.1  # Time (ms)
-    print(f"Image count: {image_count}")
+    pressures = high_pass_filter(pressures, points, sample_frequency)
     pressures = np.array(pressures)
-    pressures = sample_period_to_feet_per_ms(pressures)
+    pressures = sample_period_to_feet(pressures, sample_frequency)
+    print(f"Image count: {image_count}")
     return pressures
 
 
-def high_pass_filter(pressures, points):
+def high_pass_filter(pressures, points, sample_frequency):
     """
     High-pass digital filter to wierd behaviour at low frequencies (i.e. 100 Hz).
 
     Args:
         pressures (list[complex]) : Pressure wave in the time domain.
         points (int) : The number of points.
-
+        sample_frequency (float) : Sampling frequency or sampling rate (Hz).
     Returns:
         pressures (list[complex]): Pressure wave with frequencies below cutoff removed.
     """
 
-    F = 100.  # Cut-off (Hz)
+    F = 0.01 * sample_frequency  # 0.01 of the sampling frequency (Allen 1979).
+    print(f"F: {F}")
     W = 2 * np.pi * F  # Frequency variable (radians).
     T = 1E-4  # Time (s)
     R1 = np.exp(-W*T)
@@ -125,9 +121,8 @@ if __name__ == "__main__":
     source = np.array([30, 100, 40])
     receiver = np.array([50, 10, 60])
     betas = np.reshape([0.9, 0.9, 0.9, 0.9, 0.7, 0.7], (3, 2))
-    print(f"betas {betas}")
-    frequency = 8000  # Sampling rate (Hz)
-    points = 2048  # Number of points.
+    points = 2048
+    sample_frequency = 8000  # Sampling rate (Hz)
     rir = time_rir(receiver, source, room_dimensions,
-                   betas, points)
-    plot_time_rir(rir, points, frequency, save=True)
+                   betas, points, sample_frequency)
+    plot_time_rir(rir, points, sample_frequency, save=True)
