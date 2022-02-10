@@ -45,8 +45,8 @@ def distance_for_permutations(receiver, source, room_dimensions, vector_triplet)
     Computes the distances between the reciever and the eight image source permutations. 
 
     Args:
-        receiver (list[float]): Reciever. 
-        source (list[float]): Source. 
+        receiver (list[float]): Reciever position. 
+        source (list[float]): Source position. 
         room_dimensions (list[float]): Room dimensions. 
         vector_triplet (list[float]): Vector triplet (n,l,m) (Allen 1979).
 
@@ -59,14 +59,13 @@ def distance_for_permutations(receiver, source, room_dimensions, vector_triplet)
     for l in range(-1, 2, 2):
         for j in range(-1, 2, 2):
             for k in range(-1, 2, 2):
-                rp = np.array(receiver) + \
-                    np.array([l, j, k]) * np.array(source)
+                rp = receiver + np.array([l, j, k]) * source
                 d = np.linalg.norm(r2l - rp)
                 distances.append(d)
     return distances
 
 
-def plot_time_rir(rir, points, f):
+def plot_time_rir(rir, points, f, save=False):
     """ 
     Plot room impulse repsonse in the time domain. 
 
@@ -89,6 +88,8 @@ def plot_time_rir(rir, points, f):
              verticalalignment='center', transform=plt.gca().transAxes)
     plt.text(0.5, 0.1, f"{points} points \n{f//1000} kHz sampling rate",
              horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes)
+    if save:
+        plt.savefig(f"timerir.png", dpi=300)
     plt.show()
 
 

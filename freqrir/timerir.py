@@ -1,21 +1,21 @@
 import numpy as np
-from helper import distance_for_permutations
+from helper import distance_for_permutations, plot_time_rir
 
 
 def time_rir(receiver, source, room_dimensions, betas, points):
-    """ 
-    Calculate room impulse response in the time domain. 
-    
+    """
+    Calculate room impulse response in the time domain.
+
     Args:
-        receiver (list[float]) : Reciever 
+        receiver (list[float]) : Reciever
         source (list[float]) : Source
-        room_dimensions (list[float]) : Room dimensions 
+        room_dimensions (list[float]) : Room dimensions
         betas (list[float]) : Absorbtion coefficients. Walls: left, front, floor, right, back, ceiling.
-        points (int) :  Number of points, which determines precisions of bins. 
-    
+        points (int) :  Number of points, which determines precisions of bins.
+
     Returns:
         pressures (list[complex]) : A pressure wave in the time domain.
-    
+
     Raises:
         ValueError : If source and receiver are too close together (i.e. within 0.5 sampling periods).
     """
@@ -29,6 +29,8 @@ def time_rir(receiver, source, room_dimensions, betas, points):
     N1 = int(np.ceil(points / (room_dimensions[0]*2)))
     N2 = int(np.ceil(points / (room_dimensions[1]*2)))
     N3 = int(np.ceil(points / (room_dimensions[2]*2)))
+
+    image_count = 0
 
     for NX in range(-N1, N1+1):
         for NY in range(-N2, N2+1):
@@ -44,12 +46,16 @@ def time_rir(receiver, source, room_dimensions, betas, points):
                             IO += 1
                             # Impulse delay times 8, time (ms).
                             ID = int(np.ceil(DELP[IO-1]) + .5)
+                            # ID = int(np.ceil((DELP[IO-1] - 59)))
+
                             FDM1 = ID
                             ID += 1
 
                             # Cascade break
                             if (ID > points):
                                 break
+
+                            image_count += 1
 
                             GID = betas[0][0]**(np.abs(NX-L))
                             GID *= betas[1][0]**(np.abs(NX))
@@ -71,17 +77,20 @@ def time_rir(receiver, source, room_dimensions, betas, points):
     # Convert from sample periods to proper units.
     C = 343.  # Speed of sound (m/s)
     T = 0.1  # Time (ms)
-    pressures = 2 * C * T * np.array(pressures)
+    print(f"Image count: {image_count}")
+    pressures = C * T * np.array(pressures)
     return pressures
 
 
 def high_pass_filter(pressures, points):
-    """ 
-    High-pass digital filter to wierd behaviour at low frequencies (i.e. 100 Hz). 
+    """
+    High-pass digital filter to wierd behaviour at low frequencies (i.e. 100 Hz).
+
     Args:
-        pressures (list[complex]) : Pressure wave in the time domain. 
+        pressures (list[complex]) : Pressure wave in the time domain.
         points (int) : The number of points.
-    Returns: 
+
+    Returns:
         pressures (list[complex]): Pressure wave with frequencies below cutoff removed.
     """
 
@@ -104,3 +113,16 @@ def high_pass_filter(pressures, points):
         Y1 = Y0
         Y0 = B1 * Y1 + B2 * Y2 + X0
     return pressures
+
+
+if __name__ == "__main__":
+    # All measuresments are given in terms of sample periods (i.e. ΔR = cT) (Allen 1979)
+    room_dimensions = np.array([80, 120, 100])
+    source = np.array([30, 100, 40])
+    receiver = np.array([50, 10, 60])
+    betas = np.reshape([0.9, 0.9, 0.7, 0.9, 0.9, 0.7], (2, 3))
+    frequency = 8000  # Sampling rate (Hz)
+    points = 2048  # Number of points.
+    rir = time_rir(receiver, source, room_dimensions,
+                   betas, points)
+    plot_time_rir(rir, points, frequency, save=True)
