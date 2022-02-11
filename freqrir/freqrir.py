@@ -80,6 +80,70 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, sampling_fre
     return pressure
 
 
+def frequency_rir_m(receivers, source, room_dimensions, betas, points, sampling_frequency, frequency, c=304.8, T=1E-4):
+    """
+    Calculate room impulse response in the frequency domain.
+
+    Args:
+        receiver (list[float] with shape (3,)) : Reciever location in sample periods (s).
+        source (list[float] with shape(3,)) : Source location in sample periods (s).
+        room_dimensions (list[float] with shape (3,)) : Room dimensions in sample periods (s).
+        betas (float np-array with shape (3,2)) : Absorbtion coefficients. Walls: left, right, front, back, floor, ceiling.
+        points (int) :  Number of points, which determines precisions of bins.
+        sampling_frequency (float) : Sampling frequency or sampling rate (Hz).
+        frequency (float) : Frequency of interest (Hz).
+        c (float, optional) : Speed of sound (m/s). Defaults to 304.8 m/s (i.e. 1 ft/ms) (Allen 1979).
+        T (float, optional) : Sampling period (s). Defaults to 1E-4 s (i.e. 0.1 ms) (Allen 1979).
+
+    Returns:
+        pressure (complex) : A pressure wave in the frequency domain.
+
+    Raises:
+        ValueError : If source and receiver are too close together (i.e. within 0.5 sampling periods).
+    """
+    pressure = [0 + 0j] * len(receivers)
+    w = 2 * np.pi * frequency
+    max_length = (points/(8 * 1000))  # Seconds (s)
+    # max distance (m) = Speed of sound (m/s) * max length (s)
+    max_d = c * max_length
+    n1 = int(np.ceil(points / (room_dimensions[0]*2)))
+    n2 = int(np.ceil(points / (room_dimensions[1]*2)))
+    n3 = int(np.ceil(points / (room_dimensions[2]*2)))
+
+    for r_i, receiver in enumerate(receivers):
+        source_receiver_distance = np.linalg.norm(receiver-source)
+        if (source_receiver_distance < 0.5):
+            raise ValueError("Source and receiver are too close to eachother.")
+
+        for nx in range(-n1, n1+1):
+            b_nx = betas[0][1]**(np.abs(nx))
+            for ny in range(-n2, n2+1):
+                b_ny = betas[1][1]**(np.abs(ny))
+                for nz in range(-n3, n3+1):
+                    b_nz = betas[2][1]**(np.abs(nz))
+                    vector_triplet = np.array([nx, ny, nz])
+                    delp = distance_for_permutations(
+                        receiver, source, room_dimensions, vector_triplet)
+                    io = 0
+                    for l in range(0, 2):
+                        b_nx_l = betas[0][0]**(np.abs(nx-l))
+                        for j in range(0, 2):
+                            b_ny_j = betas[1][0]**(np.abs(ny-j))
+                            for k in range(0, 2):
+                                b_nz_k = betas[2][0]**(np.abs(nz-k))
+                                io += 1
+                                id = delp[io-1]
+                                d = sample_period_to_meters(
+                                    id, sampling_frequency)
+                                T = d / c
+                                if (d > max_d):
+                                    break
+                                b = b_nx_l * b_ny_j * b_nz_k * b_nx * b_ny * b_nz
+                                A = b / 4 * np.pi * d
+                                pressure[r_i] += A * np.exp(-1j * w * T)
+    return pressure
+
+
 if __name__ == "__main__":
     # All measuresments are given in terms of sample periods (i.e. ΔR = cT) (Allen 1979)
     source = np.array([30, 100, 40])

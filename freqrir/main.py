@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from . freqrir import frequency_rir
+from . freqrir import frequency_rir, frequency_rir_m
 from . helper import meters_to_sample_periods
 
 
@@ -23,7 +23,8 @@ def sample_random_receiver_locations(n, radius, offset=[0, 0, 0]):
     x = radius * np.sin(theta) * np.cos(phi) + x_off
     y = radius * np.sin(theta) * np.sin(phi) + y_off
     z = radius * np.cos(theta) + z_off
-    return np.array([x, y, z])
+    r = np.array([x, y, z])
+    return [np.array(x) for x in zip(*r)]
 
 
 def plot_recievers(r, projection='2d'):
@@ -72,33 +73,29 @@ def distance_from_offset(r, offset=[0, 0, 0]):
 
 source = np.array([30, 100, 40])
 receiver = np.array([50, 10, 60])
-room_dimensions = np.array([80, 120, 100])
 betas = np.reshape([0.9, 0.9, 0.9, 0.9, 0.7, 0.7], (3, 2))
 sample_frequency = 8000
 frequency = 1000  # Hz
 points = 2048
-
 radius = 1  # Meter
-n_receivers = 5
 offset = [2, 2, 2]
-r = sample_random_receiver_locations(n_receivers, radius, offset)
-plot_recievers(r, projection='3d')
-plot_recievers(r, projection='2d')
-[x, y, z] = r
-ds = distance_from_offset(r, offset)
 
+n_rooms = 1
+n_receivers = 100
 data = []
-# Generate room impusle repsonse for 1000 receivers in a room.
-for rx, ry, rz in zip(*r):
-    receiver = np.array([rx, ry, rz])
-    receiver = meters_to_sample_periods(receiver, sample_frequency)
-    rir = frequency_rir(receiver, source, room_dimensions,
-                        betas, points, sample_frequency, frequency)
-    data.append((receiver, rir))
-    # print(f"receiver: {receiver}, rir: {rir}")
 
-print(data)
+r = sample_random_receiver_locations(n_receivers, radius, offset)
+room_dimensions = np.random.uniform(100, 300, (n_rooms, 3))
 
+for i in range(n_rooms):
+    room_dimension = room_dimensions[i]
+    rir = frequency_rir_m(r, source, room_dimension,
+                          betas, points, sample_frequency, frequency)
+    data.append((r, rir))
+
+# print(data)
+
+# 5 recievers in 8 seconds, compared to pyroom with 25 seconds.
 # 10 recievers in 14 seconds, compared to pyroom with 50 seconds.
 # 100 recievers in 2 minutes 13 seconds, compared Pyroom to 8 minutes 5 seconds
 # Make a markdown table for the above data.
