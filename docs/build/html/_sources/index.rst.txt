@@ -11,6 +11,7 @@ Welcome to freqRIR's documentation!
    :caption: Contents:
 
    modules
+   license
 
 Indices and tables
 ==================
