@@ -1,5 +1,5 @@
 import numpy as np
-from freqrir.helper import distance_for_permutations, plot_time_rir
+from .helper import distance_for_permutations, plot_time_rir
 
 
 def time_rir(receiver, source, room_dimensions, betas, points, sample_frequency, c=304.8):
