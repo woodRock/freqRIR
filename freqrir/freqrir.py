@@ -75,8 +75,8 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, sampling_fre
                             pressure += A * np.exp(-1j * w * T)
                             image_count += 1
 
-    print(f"Image count: {image_count}")
-    print(f"room impulse repsonse: {pressure} Pa")
+    # print(f"Image count: {image_count}")
+    # print(f"room impulse repsonse: {pressure} Pa")
     return pressure
 
 

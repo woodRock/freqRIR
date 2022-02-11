@@ -5,12 +5,6 @@ freqRIR
 
 Generate a room impuse response in the frequency domain.
 
-Documentation
--------------
-
-Read the documentation
-`Docs <https://freqrir.readthedocs.io/en/latest/index.html>`__
-
 Time domain
 -----------
 

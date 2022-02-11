@@ -2,13 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from . freqrir import frequency_rir
+from . helper import meters_to_sample_periods
 
 
 def sample_random_receiver_locations(n, radius, offset=[0, 0, 0]):
-    """ Sample n random receiver locations within the volume of a point cloud with center offset.
+    """ Sample a random reciever location from within a spherical point cloud.
 
-    Args: 
-        n (int) : number of receiver locations to sample. 
+    Args:
+        n (int) : number of receiver locations to sample.
         radius (float) : radius of the point cloud.
         offset (list[float], optional) : offset from origin for center of point cloud. Default is [0, 0, 0] (origin).
 
@@ -28,7 +29,7 @@ def sample_random_receiver_locations(n, radius, offset=[0, 0, 0]):
 def plot_recievers(r, projection='2d'):
     """ Plot the reciever locations.
 
-    Args: 
+    Args:
         r (Array-like) : Array of reciever locations.
         projection (str) : Projection of the reciever locations. Default is 2d.
     """
@@ -48,12 +49,12 @@ def plot_recievers(r, projection='2d'):
 
 
 def distance_from_offset(r, offset=[0, 0, 0]):
-    """ Compute the distances for the reciever locations from the offset. 
+    """ Compute the distances for the reciever locations from the offset.
 
-    This method generates a density plot for the distances from the offset. The purpose of this method is to verify that the distances are being generated with a uniformly distributed magnitude from the offset.
+    This method generates a density plot for the distances from the offset. The purpose of this method is to verify that the distances are being generated with a uniformly distributed magnitude from the offset (i.e. the center of the point cloud).
 
     Args:
-        r (Array-like) : Array of reciever locations. 
+        r (Array-like) : Array of reciever locations.
         offset (list[float]) : Offset from origin for center of point cloud. Default is [0, 0, 0] (origin).
 
     Returns:
@@ -62,7 +63,8 @@ def distance_from_offset(r, offset=[0, 0, 0]):
     ds = [np.linalg.norm(np.array([rx, ry, rz]) - np.array(offset))
           for rx, ry, rz in zip(*r)]
     sns.displot(ds)
-    plt.xlabel("distance")
+    plt.title("Density plot for distance from offset")
+    plt.xlabel("distance from offset (m)")
     plt.ylabel("density")
     plt.savefig("reciever_distances_from_origin.png")
     return ds
@@ -72,21 +74,27 @@ source = np.array([30, 100, 40])
 receiver = np.array([50, 10, 60])
 room_dimensions = np.array([80, 120, 100])
 betas = np.reshape([0.9, 0.9, 0.9, 0.9, 0.7, 0.7], (3, 2))
-sampling_frequency = 8000
+sample_frequency = 8000
 frequency = 1000  # Hz
 points = 2048
 
-# rir = frequency_rir(receiver, source, room_dimensions,
-#                     betas, points, sampling_frequency, frequency)
-
-radius = 1
-n = 1000
+radius = 1  # Meter
+n_receivers = 10
 offset = [2, 2, 2]
-r = sample_random_receiver_locations(n, radius, offset)
+r = sample_random_receiver_locations(n_receivers, radius, offset)
 plot_recievers(r, projection='3d')
 plot_recievers(r, projection='2d')
 [x, y, z] = r
-offset = [0, 0, 0]
 ds = distance_from_offset(r, offset)
 
-print(r)
+data = []
+# Generate room impusle repsonse for 1000 receivers in a room.
+for rx, ry, rz in zip(*r):
+    receiver = np.array([rx, ry, rz])
+    receiver = meters_to_sample_periods(receiver, sample_frequency)
+    rir = frequency_rir(receiver, source, room_dimensions,
+                        betas, points, sample_frequency, frequency)
+    data.append((receiver, rir))
+    # print(f"receiver: {receiver}, rir: {rir}")
+
+print(data)

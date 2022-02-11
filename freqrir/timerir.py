@@ -68,7 +68,7 @@ def time_rir(receiver, source, room_dimensions, betas, points, sample_frequency,
 
     pressures = high_pass_filter(pressures, points, sample_frequency)
     pressures = np.array(pressures)
-    print(f"Image count: {image_count}")
+    # print(f"Image count: {image_count}")
     return pressures
 
 
