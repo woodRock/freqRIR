@@ -79,7 +79,7 @@ frequency = 1000  # Hz
 points = 2048
 
 radius = 1  # Meter
-n_receivers = 10
+n_receivers = 5
 offset = [2, 2, 2]
 r = sample_random_receiver_locations(n_receivers, radius, offset)
 plot_recievers(r, projection='3d')
@@ -98,3 +98,7 @@ for rx, ry, rz in zip(*r):
     # print(f"receiver: {receiver}, rir: {rir}")
 
 print(data)
+
+# 10 recievers in 14 seconds, compared to pyroom with 50 seconds.
+# 100 recievers in 2 minutes 13 seconds, compared Pyroom to 8 minutes 5 seconds
+# Make a markdown table for the above data.
