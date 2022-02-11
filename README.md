@@ -15,6 +15,22 @@ Plot a typical impulse repsonse for a room 80 x 12 x 100 sample lengths long. Wa
 
 ![Room impulse repsonse in time-domain](./timerir.png)
 
+## Installation 
+
+The python libraries necessary ro run this can be installed using `pip` as follows
+
+```bash
+$ pip install -r requirements.txt
+```
+
+## Testing 
+
+The unit tests are located in the `tests` directory, they can be run from the root directory
+
+```bash
+$ python -m unittest discover -s tests
+```
+
 ## References 
 
 1. Allen, J. B., & Berkley, D. A. (1979). Image method for efficiently simulating small‐room acoustics. The Journal of the Acoustical Society of America, 65(4), 943-950. [Available](https://asa.scitation.org/doi/abs/10.1121/1.382599)
