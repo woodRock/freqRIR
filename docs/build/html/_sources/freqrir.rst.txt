@@ -1,6 +1,6 @@
 freqrir module
 ==============   
 
-.. automodule:: freqrir
+.. automodule:: freqrir.freqrir
    :members:
    :undoc-members:

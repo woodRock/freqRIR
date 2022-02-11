@@ -15,11 +15,11 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join('..')))
-sys.path.insert(0, os.path.abspath(os.path.join('..','freqrir')))
-sys.path.insert(0, os.path.abspath(os.path.join('..','..')))
-sys.path.insert(0, os.path.abspath(os.path.join('..','..','freqrir')))
-
+# sys.path.append('..')
+# sys.path.insert(0, os.path.abspath(os.path.join('..')))
+# sys.path.insert(0, os.path.abspath(os.path.join('..', 'freqrir')))
+# sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
+sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
 
 # -- Project information -----------------------------------------------------
 
@@ -62,4 +62,6 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+
+# 2022-02-11 : Removed to fix error. (used to be '_static')
+html_static_path = []

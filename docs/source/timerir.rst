@@ -1,6 +1,6 @@
 timerir module
 ==============
 
-.. automodule:: timerir
+.. automodule:: freqrir.timerir
    :members:
    :undoc-members:
