@@ -80,7 +80,7 @@ def frequency_rir(receiver, source, room_dimensions, betas, points, sampling_fre
     return pressure
 
 
-def frequency_rir_m(receivers, source, room_dimensions, betas, points, sampling_frequency, frequency, c=304.8, T=1E-4):
+def frequency_rir_m(receivers, source, room_dimensions, betas, points, sampling_frequency, frequency, c=304.8, T=1E-4, order=-1):
     """
     Calculate room impulse response in the frequency domain.
 
@@ -94,6 +94,7 @@ def frequency_rir_m(receivers, source, room_dimensions, betas, points, sampling_
         frequency (float) : Frequency of interest (Hz).
         c (float, optional) : Speed of sound (m/s). Defaults to 304.8 m/s (i.e. 1 ft/ms) (Allen 1979).
         T (float, optional) : Sampling period (s). Defaults to 1E-4 s (i.e. 0.1 ms) (Allen 1979).
+        order (int, optional) : Reflection order of the room impulse response. Defaults to -1 (i.e. all orders).
 
     Returns:
         pressure (complex) : A pressure wave in the frequency domain.
@@ -103,9 +104,8 @@ def frequency_rir_m(receivers, source, room_dimensions, betas, points, sampling_
     """
     pressure = [0 + 0j] * len(receivers)
     w = 2 * np.pi * frequency
-    max_length = (points/(8 * 1000))  # Seconds (s)
-    # max distance (m) = Speed of sound (m/s) * max length (s)
-    max_d = c * max_length
+    max_delay = (points/(8 * 1000))
+    max_distance = c * max_delay
     n1 = int(np.ceil(points / (room_dimensions[0]*2)))
     n2 = int(np.ceil(points / (room_dimensions[1]*2)))
     n3 = int(np.ceil(points / (room_dimensions[2]*2)))
@@ -113,8 +113,8 @@ def frequency_rir_m(receivers, source, room_dimensions, betas, points, sampling_
     for r_i, receiver in enumerate(receivers):
         source_receiver_distance = np.linalg.norm(receiver-source)
         if (source_receiver_distance < 0.5):
-            raise ValueError("Source and receiver are too close to eachother.")
-
+            raise ValueError(
+                "Source and receiver are too close to eachother.")
         for nx in range(-n1, n1+1):
             b_nx = betas[0][1]**(np.abs(nx))
             for ny in range(-n2, n2+1):
@@ -130,17 +130,18 @@ def frequency_rir_m(receivers, source, room_dimensions, betas, points, sampling_
                         for j in range(0, 2):
                             b_ny_j = betas[1][0]**(np.abs(ny-j))
                             for k in range(0, 2):
-                                b_nz_k = betas[2][0]**(np.abs(nz-k))
-                                io += 1
-                                id = delp[io-1]
-                                d = sample_period_to_meters(
-                                    id, sampling_frequency)
-                                T = d / c
-                                if (d > max_d):
-                                    break
-                                b = b_nx_l * b_ny_j * b_nz_k * b_nx * b_ny * b_nz
-                                A = b / 4 * np.pi * d
-                                pressure[r_i] += A * np.exp(-1j * w * T)
+                                if (np.abs(2*nx-l) + np.abs(2*ny-j) + np.abs(2*nz-k) <= order or order == -1):
+                                    b_nz_k = betas[2][0]**(np.abs(nz-k))
+                                    io += 1
+                                    id = delp[io-1]
+                                    d = sample_period_to_meters(
+                                        id, sampling_frequency)
+                                    T = d / c
+                                    if (d > max_distance):
+                                        break
+                                    b = b_nx_l * b_ny_j * b_nz_k * b_nx * b_ny * b_nz
+                                    A = b / 4 * np.pi * d
+                                    pressure[r_i] += A * np.exp(-1j * w * T)
     return pressure
 
 
@@ -155,4 +156,4 @@ if __name__ == "__main__":
     points = 2048
 
     rir = frequency_rir(receiver, source, room_dimensions,
-                        betas, points, sampling_frequency, frequency)
+                        betas, points, sampling_frequency, frequency, order=2)

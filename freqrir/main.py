@@ -72,16 +72,16 @@ def distance_from_offset(r, offset=[0, 0, 0]):
 
 
 source = np.array([30, 100, 40])
-receiver = np.array([50, 10, 60])
 betas = np.reshape([0.9, 0.9, 0.9, 0.9, 0.7, 0.7], (3, 2))
 sample_frequency = 8000
 frequency = 1000  # Hz
-points = 2048
+points = 783
 radius = 1  # Meter
 offset = [2, 2, 2]
 
-n_rooms = 1
-n_receivers = 100
+n_rooms = 10
+n_receivers = 5
+order = 1
 data = []
 
 r = sample_random_receiver_locations(n_receivers, radius, offset)
@@ -90,12 +90,5 @@ room_dimensions = np.random.uniform(100, 300, (n_rooms, 3))
 for i in range(n_rooms):
     room_dimension = room_dimensions[i]
     rir = frequency_rir_m(r, source, room_dimension,
-                          betas, points, sample_frequency, frequency)
+                          betas, points, sample_frequency, frequency, order=order)
     data.append((r, rir))
-
-# print(data)
-
-# 5 recievers in 8 seconds, compared to pyroom with 25 seconds.
-# 10 recievers in 14 seconds, compared to pyroom with 50 seconds.
-# 100 recievers in 2 minutes 13 seconds, compared Pyroom to 8 minutes 5 seconds
-# Make a markdown table for the above data.

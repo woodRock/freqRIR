@@ -273,6 +273,8 @@ std::vector< std::vector<double> > gen_rir(double c, double fs, const std::vecto
 		n2 = (int) ceil(nSamples/(2*L[1]));
 		n3 = (int) ceil(nSamples/(2*L[2]));
 
+        int image_count = 0;
+
 		// Generate room impulse response
 		for (mx = -n1 ; mx <= n1 ; mx++)
 		{
@@ -308,6 +310,7 @@ std::vector< std::vector<double> > gen_rir(double c, double fs, const std::vecto
 									fdist = floor(dist);
 									if (fdist < nSamples)
 									{
+                                        image_count = image_count + 1;
 										gain = sim_microphone(Rp_plus_Rm[0], Rp_plus_Rm[1], Rp_plus_Rm[2], angle, microphone_type)
 											* refl[0]*refl[1]*refl[2]/(4*M_PI*dist*cTs);
 
@@ -340,6 +343,8 @@ std::vector< std::vector<double> > gen_rir(double c, double fs, const std::vecto
 				imp[idxMicrophone][idx] = Y[0] + A1*Y[1] + R1*Y[2];
 			}
 		}
+        // Print the image count to stout. 
+        printf("Image count: %d\n",image_count);
 	}
 	
 	delete[] Y;
@@ -354,26 +359,30 @@ std::vector< std::vector<double> > gen_rir(double c, double fs, const std::vecto
 int main() {
     double c = 343.0; // Speed of sound (m/s). 
     double sampling_rate = 16000; // Sampling rate (Hz).
-    std::vector<std::vector<double>> receivers{ {1.1, 1, 1.2} , {1.1, 1, 1.2}, {1.1, 1, 1.2} , {1.1, 1, 1.2} , {1.1, 1, 1.2} };
+    
     std::vector<double> source{2., 3., 2.};
     std::vector<double> room_dimensions{3.2, 4, 2.7};
     std::vector<double> betas{0.92, 0.92, 0.92, 0.92, 0.92, 0.92};
     std::vector<double> orientation{0,0};
-    double T60 = 0.6;
-    int nSamples = -1;
+    int nSamples = 783;
     int isHighPassFilter = 1;
     int nDimensions = 3;
-    int nOrder = -1;
     char microphone_type = 'o'; // Omnidirectional microphone.
+    
+    int rooms = 1000;
+    int n_receivers = 5; 
+    int nOrder = 1;
+
+    std::vector<std::vector<double>> receivers;
+    for (int i = 0; i < n_receivers; i++) {
+        receivers.push_back(std::vector<double>{1.1, 1, 1.2});
+    }
 
     std::vector<std::vector<double>> rir;
-
-    int runs = 1;
-    for (int i = 0; i < runs; i++) {
+    for (int i = 0; i < rooms; i++) {
          rir = gen_rir(c, sampling_rate, receivers, source, room_dimensions, betas, orientation, isHighPassFilter, nDimensions, nOrder, nSamples, microphone_type);
     }
 
-    
     // for (std::vector<double> vect1D : rir)
     // {
     //     for (double x : vect1D)
