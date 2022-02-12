@@ -1,6 +1,6 @@
 """
-Pyroom Comparison
-=================
+pyroom
+======
 
 The purpose of this example is to compared the results of the pyroomacoustics implementation to our own. We benchmark the two in terms of their exeuction time and the quality of the results. An example impulse repsonse image for both implementations for the same room setup is given below. 
 
@@ -12,6 +12,7 @@ The purpose of this example is to compared the results of the pyroomacoustics im
   :width: 400
   :alt: freqrir room impulse repsonse in time-domain.
 
+The experimental setup is from (Lehmann 2008) with a point cloud added. Room dimensions :math:`[3.2, 4, 4.7]` m, source :math:`[2, 3, 2]`, reciever point cloud at center :math:`[1.1, 1, 1.2]` m and radius :math:`R_r = 1` m, sampling frequency :math:`F_s = 16` kHz, and uniform reflection coefficients :math:`\Beta = 0.92`, reverbertaion time :math:`T_{60} = 0.6` s. 
 
 """
 import matplotlib.pyplot as plt
@@ -31,7 +32,6 @@ n_rooms = 1
 n_receivers = 1
 
 e_absorption = np.sqrt(1 - 0.92)
-print(f"e_absorption: {e_absorption}")
 
 for i in range(n_rooms):
     room = pra.ShoeBox(
@@ -39,15 +39,13 @@ for i in range(n_rooms):
     )
     room.add_source(source)
     mic_locs = sample_random_receiver_locations(
-        n_receivers, 1, [1.1, 1, 1.2])  # list of(x, y, z) tuples.
-    # mic_locs = [np.array((1.1, 1, 1.2))]
+        n_receivers, 1, [1.1, 1, 1.2])
     room.add_microphone_array(list(zip(*mic_locs)))
     room.image_source_model()
     room.compute_rir()
     points = len(room.rir[0][0])
     rir = time_rir(mic_locs, source, room_dim,
                    betas, points, sample_frequency, order=max_order)
-
 
 room.plot_rir(0)
 plt.savefig("examples/rir/assets/pyroom.png")
