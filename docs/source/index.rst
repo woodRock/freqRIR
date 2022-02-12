@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 freqRIR documentation
-=======
+=====================
 
 |Documentation Status| |Python package|
 

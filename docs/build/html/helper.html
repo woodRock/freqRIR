@@ -38,7 +38,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="home.html">freqRIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="home.html">Home</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">freqrir</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="freqrir.html">freqrir module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">helper module</a></li>
@@ -104,6 +104,27 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="freqrir.helper.distance_from_offset">
+<span class="sig-prename descclassname"><span class="pre">freqrir.helper.</span></span><span class="sig-name descname"><span class="pre">distance_from_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.helper.distance_from_offset" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the distances for the reciever locations from the offset.</p>
+<p>This method generates a density plot for the distances from the offset. The purpose of this method is to verify that the distances are being generated with a uniformly distributed magnitude from the offset (i.e. the center of the point cloud).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>Array-like</em>) – Array of reciever locations.</p></li>
+<li><p><strong>offset</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Offset from origin for center of point cloud. Default is [0, 0, 0] (origin).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of distances.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>d (Array-like)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="freqrir.helper.meters_to_sample_periods">
 <span class="sig-prename descclassname"><span class="pre">freqrir.helper.</span></span><span class="sig-name descname"><span class="pre">meters_to_sample_periods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">304.8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.helper.meters_to_sample_periods" title="Permalink to this definition"></a></dt>
 <dd><p>Convert a measurement from meters to sample periods.</p>
@@ -131,7 +152,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="freqrir.helper.plot_frequency_rir">
-<span class="sig-prename descclassname"><span class="pre">freqrir.helper.</span></span><span class="sig-name descname"><span class="pre">plot_frequency_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.helper.plot_frequency_rir" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">freqrir.helper.</span></span><span class="sig-name descname"><span class="pre">plot_frequency_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.helper.plot_frequency_rir" title="Permalink to this definition"></a></dt>
 <dd><p>Plot room impulse repsonse in the frequency domain.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -139,7 +160,21 @@
 <li><p><strong>rir</strong> (<em>list</em><em>[</em><em>complex</em><em>]</em>) – A pressure wave in the frequency domain.</p></li>
 <li><p><strong>points</strong> (<em>int</em>) – The number of points.</p></li>
 <li><p><strong>frequency</strong> (<em>int</em>) – Sampling rate (Hz)</p></li>
-<li><p><strong>save</strong> (<em>bool</em>) – Whether to save the plot.</p></li>
+<li><p><strong>save</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to save file to. Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="freqrir.helper.plot_recievers">
+<span class="sig-prename descclassname"><span class="pre">freqrir.helper.</span></span><span class="sig-name descname"><span class="pre">plot_recievers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2d'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.helper.plot_recievers" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the reciever locations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>Array-like</em>) – Array of reciever locations.</p></li>
+<li><p><strong>projection</strong> (<em>str</em>) – Projection of the reciever locations. Default is 2d.</p></li>
 </ul>
 </dd>
 </dl>
@@ -147,15 +182,16 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="freqrir.helper.plot_time_rir">
-<span class="sig-prename descclassname"><span class="pre">freqrir.helper.</span></span><span class="sig-name descname"><span class="pre">plot_time_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.helper.plot_time_rir" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">freqrir.helper.</span></span><span class="sig-name descname"><span class="pre">plot_time_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rt60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.helper.plot_time_rir" title="Permalink to this definition"></a></dt>
 <dd><p>Plot room impulse repsonse in the time domain.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rir</strong> (<em>list</em><em>[</em><em>complex</em><em>]</em>) – A pressure wave in the frequency domain.</p></li>
 <li><p><strong>points</strong> (<em>int</em>) – The number of points.</p></li>
+<li><p><strong>rt60</strong> (<em>float</em>) – The reverberation time (RT60) of the room.</p></li>
 <li><p><strong>f</strong> (<em>int</em>) – Sampling rate (Hz)</p></li>
-<li><p><strong>save</strong> (<em>bool</em>) – Whether to save the plot.</p></li>
+<li><p><strong>save</strong> (<em>str</em><em>, </em><em>optional</em>) – Save the plot to a file.</p></li>
 </ul>
 </dd>
 </dl>
@@ -211,6 +247,27 @@
 <span class="go">3.048 # meters (m)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="freqrir.helper.sample_random_receiver_locations">
+<span class="sig-prename descclassname"><span class="pre">freqrir.helper.</span></span><span class="sig-name descname"><span class="pre">sample_random_receiver_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.helper.sample_random_receiver_locations" title="Permalink to this definition"></a></dt>
+<dd><p>Sample a random reciever location from within a spherical point cloud.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – number of receiver locations to sample.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – radius of the point cloud.</p></li>
+<li><p><strong>offset</strong> (<em>list</em><em>[</em><em>float</em><em>]</em><em>, </em><em>optional</em>) – offset from origin for center of point cloud. Default is [0, 0, 0] (origin).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of reciever locations.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>r (Array-like)</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

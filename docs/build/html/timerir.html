@@ -38,7 +38,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="home.html">freqRIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="home.html">Home</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">freqrir</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="freqrir.html">freqrir module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="helper.html">helper module</a></li>
@@ -99,7 +99,35 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="freqrir.timerir.time_rir">
-<span class="sig-prename descclassname"><span class="pre">freqrir.timerir.</span></span><span class="sig-name descname"><span class="pre">time_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">304.8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.timerir.time_rir" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">freqrir.timerir.</span></span><span class="sig-name descname"><span class="pre">time_rir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receivers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">304.8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.timerir.time_rir" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate room impulse response in the time domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>receivers</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>float</em><em>]</em><em>] </em><em>with shape</em><em> (</em><em>N</em><em>,</em><em>3</em><em>)</em>) – Reciever location(s) in sample periods (s).</p></li>
+<li><p><strong>source</strong> (<em>list</em><em>[</em><em>float</em><em>] </em><em>with shape</em><em>(</em><em>3</em><em>,</em><em>)</em>) – Source location in sample periods (s).</p></li>
+<li><p><strong>room_dimensions</strong> (<em>list</em><em>[</em><em>float</em><em>] </em><em>with shape</em><em> (</em><em>3</em><em>,</em><em>)</em>) – Room dimensions in sample periods (s).</p></li>
+<li><p><strong>betas</strong> (<em>float np-array with shape</em><em> (</em><em>3</em><em>,</em><em>2</em><em>)</em>) – Absorbtion coefficients. Walls: left, right, front, back, floor, ceiling.</p></li>
+<li><p><strong>points</strong> (<em>int</em>) – Number of points, which determines precisions of bins.</p></li>
+<li><p><strong>sample_frequency</strong> (<em>float</em>) – Sampling frequency or sampling rate (Hz).</p></li>
+<li><p><strong>c</strong> (<em>float</em><em>, </em><em>optional</em>) – Speed of sound (m/s). Defaults to 304.8 m/s (i.e. 1 ft/ms) (Allen 1979).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A pressure wave in the time domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pressures (list[complex])</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If source and receiver are too close together (i.e. within 0.5 sampling periods).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="freqrir.timerir.time_rir_slow">
+<span class="sig-prename descclassname"><span class="pre">freqrir.timerir.</span></span><span class="sig-name descname"><span class="pre">time_rir_slow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">304.8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#freqrir.timerir.time_rir_slow" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate room impulse response in the time domain.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

@@ -65,3 +65,6 @@ html_theme = 'sphinx_rtd_theme'
 
 # 2022-02-11 : Removed to fix error. (used to be '_static')
 html_static_path = []
+
+# 2022-02-12: Mock imports for rbind11. This library is compiled from c++ code, readthedocs can't do that.
+autodoc_mock_imports = ["rbind11"]
