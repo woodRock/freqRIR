@@ -1,6 +1,6 @@
 import numpy as np
+import rirbind as rb
 from . helper import distance_for_permutations, plot_time_rir
-from . lib import rirbind as rb
 
 
 def time_rir(receivers, source, room_dimensions, betas, points, sample_frequency, order=-1, c=304.8):
