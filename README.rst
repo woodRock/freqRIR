@@ -28,7 +28,7 @@ Installation
 ------------
 
 The python libraries necessary ro run this can be installed using
-`pip` as follows
+pip as follows
 
 .. code:: bash
    $ pip install . 
