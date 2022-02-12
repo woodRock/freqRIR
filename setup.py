@@ -1,25 +1,33 @@
-import sys
+"""
+Setup
+======== 
 
-from pybind11 import get_cmake_dir
-# Available at setup time due to pyproject.toml
+A `setup.py` file given in this code is required in the root directory of the project. This installs the rirbind as a library using the pip package manager. This method is preferred, as it allows us to easily install the depedency when it is run on remote machines (i.e. GitHub actions).
+
+Pybind 
+------
+
+pybind11 is a lightweight header-only library that exposes C++ types in Python and vice versa, mainly to create Python bindings of existing C++ code. Its goals and syntax are similar to the excellent Boost.Python library by David Abrahams: to minimize boilerplate code in traditional extension modules by inferring type information using compile-time introspection.
+
+Installation 
+------------
+
+The following command installs the `rirbind` package through pip. The packages `setuptools` and `pybind11` are both required before running the `setup.py` file.
+
+.. code:: bash
+    $ pip install pybind11 setuptools
+    $ pip install --verbose . 
+
+"""
+
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import setup
 
 __version__ = "0.0.1"
 
-# The main interface is through Pybind11Extension.
-# * You can add cxx_std=11/14/17, and then build_ext can be removed.
-# * You can set include_pybind11=false to add the include directory yourself,
-#   say from a submodule.
-#
-# Note:
-#   Sort input source files if you glob sources to ensure bit-for-bit
-#   reproducible builds (https://github.com/pybind/python_example/pull/53)
-
 ext_modules = [
     Pybind11Extension("rirbind",
                       ["freqrir/lib/rirbind.cpp"],
-                      # Example: passing in the version to the compiled code
                       define_macros=[('VERSION_INFO', __version__)],
                       ),
 ]
@@ -27,7 +35,7 @@ ext_modules = [
 setup(
     name="rirbind",
     version=__version__,
-    author="Sylvain Corlay",
+    author="Jesse Wood",
     author_email="j.r.h.wood98@gmail.com",
     url="https://github.com/woodRock/freqRIR",
     description="A room impulse response generator using pybind11",
