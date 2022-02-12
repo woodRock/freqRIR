@@ -1,8 +1,77 @@
 import numpy as np
 from . helper import distance_for_permutations, plot_time_rir
+from . lib import rirbind as rb
 
 
-def time_rir(receiver, source, room_dimensions, betas, points, sample_frequency, c=304.8):
+def time_rir(receivers, source, room_dimensions, betas, points, sample_frequency, order=-1, c=304.8):
+    """
+    Calculate room impulse response in the time domain.
+
+    Args:
+        receivers (list[list[float]] with shape (N,3)) : Reciever location(s) in sample periods (s).
+        source (list[float] with shape(3,)) : Source location in sample periods (s).
+        room_dimensions (list[float] with shape (3,)) : Room dimensions in sample periods (s).
+        betas (float np-array with shape (3,2)) : Absorbtion coefficients. Walls: left, right, front, back, floor, ceiling.
+        points (int) :  Number of points, which determines precisions of bins.
+        sample_frequency (float) : Sampling frequency or sampling rate (Hz).
+        c (float, optional) : Speed of sound (m/s). Defaults to 304.8 m/s (i.e. 1 ft/ms) (Allen 1979).
+
+    Returns:
+        pressures (list[complex]) : A pressure wave in the time domain.
+
+    Raises:
+        ValueError : If source and receiver are too close together (i.e. within 0.5 sampling periods).
+    """
+    for receiver in receivers:
+        source_receiver_distance = np.linalg.norm(receiver-source)
+        if (source_receiver_distance < 0.5):
+            raise ValueError("Source and reciever are too close to eachother.")
+
+    direction = 'o'  # Omni-directional source.
+    angle = [0, 0]  # No angle.
+    isHighPass = 1  # High-pass filter is applied or not.
+    nDimensions = 3  # 2d or 3d.
+
+    rir = rb.gen_rir(c, sample_frequency, receivers, source,
+                     room_dimensions, betas, angle, isHighPass, nDimensions, order, points, direction)
+
+    return rir
+
+
+def high_pass_filter(pressures, points, sample_frequency):
+    """
+    High-pass digital filter to wierd behaviour at low frequencies (i.e. 100 Hz).
+
+    Args:
+        pressures (list[complex]) : Pressure wave in the time domain.
+        points (int) : The number of points.
+        sample_frequency (float) : Sampling frequency or sampling rate (Hz).
+    Returns:
+        pressures (list[complex]): Pressure wave with frequencies below cutoff removed.
+    """
+
+    F = 0.01 * sample_frequency  # 0.01 of the sampling frequency (Allen 1979).
+    W = 2 * np.pi * F  # Frequency variable (radians).
+    T = 1E-4  # Time (s)
+    R1 = np.exp(-W*T)
+    R2 = R1
+    B1 = 2. * R1 * np.cos(W * T)
+    B2 = -R1 * R1
+    A1 = -(1. + R2)
+    A2 = R2
+    Y1 = 0
+    Y2 = 0
+    Y0 = 0
+    for I in range(0, points):
+        X0 = pressures[I]
+        pressures[I] = Y0 + A1 * Y1 + A2 * Y2
+        Y2 = Y1
+        Y1 = Y0
+        Y0 = B1 * Y1 + B2 * Y2 + X0
+    return pressures
+
+
+def time_rir_slow(receiver, source, room_dimensions, betas, points, sample_frequency, c=304.8):
     """
     Calculate room impulse response in the time domain.
 

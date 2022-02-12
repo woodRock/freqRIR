@@ -11,7 +11,7 @@ class TestTimerir(unittest.TestCase):
         room_dimensions = np.array([5, 5, 5])
         sample_frequency = 8000
         points = 2048
-        betas = np.array([[1, 1], [1, 1], [1, 1]])
+        betas = np.array([1, 1, 1, 1, 1, 1])
         with self.assertRaises(ValueError):
             time_rir(source, receiver, room_dimensions,
                      betas, points, sample_frequency)

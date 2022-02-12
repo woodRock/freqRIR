@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 
 
 def distance_for_permutations(receiver, source, room_dimensions, vector_triplet):
@@ -93,35 +94,102 @@ def sample_period_to_feet(x, sample_frequency, c=1000):
     return x
 
 
-def plot_time_rir(rir, points, f, save=False):
+def sample_random_receiver_locations(n, radius, offset=[0, 0, 0]):
+    """ Sample a random reciever location from within a spherical point cloud.
+
+    Args:
+        n (int) : number of receiver locations to sample.
+        radius (float) : radius of the point cloud.
+        offset (list[float], optional) : offset from origin for center of point cloud. Default is [0, 0, 0] (origin).
+
+    Returns:
+        r (Array-like) : Array of reciever locations.
+    """
+    x_off, y_off, z_off = offset
+    theta = np.random.uniform(0, 2 * np.pi, n)
+    phi = np.random.uniform(0, np.pi, n)
+    radius = np.random.uniform(0, radius, n)
+    x = radius * np.sin(theta) * np.cos(phi) + x_off
+    y = radius * np.sin(theta) * np.sin(phi) + y_off
+    z = radius * np.cos(theta) + z_off
+    r = np.array([x, y, z])
+    return [np.array(x) for x in zip(*r)]
+
+
+def plot_recievers(r, projection='2d'):
+    """ Plot the reciever locations.
+
+    Args:
+        r (Array-like) : Array of reciever locations.
+        projection (str) : Projection of the reciever locations. Default is 2d.
+    """
+    [x, y, z] = r
+    fig = plt.figure()
+    if projection == '3d':
+        ax = fig.add_subplot(111, projection=projection)
+        ax.scatter(x, y, z)
+    else:
+        ax = fig.add_subplot(111)
+        ax.scatter(x, y)
+    plt.title('Reciever Locations')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.savefig(f"receiver_locations-{projection}.png")
+    plt.show()
+
+
+def distance_from_offset(r, offset=[0, 0, 0]):
+    """ Compute the distances for the reciever locations from the offset.
+
+    This method generates a density plot for the distances from the offset. The purpose of this method is to verify that the distances are being generated with a uniformly distributed magnitude from the offset (i.e. the center of the point cloud).
+
+    Args:
+        r (Array-like) : Array of reciever locations.
+        offset (list[float]) : Offset from origin for center of point cloud. Default is [0, 0, 0] (origin).
+
+    Returns:
+        d (Array-like) : Array of distances.
+    """
+    ds = [np.linalg.norm(np.array([rx, ry, rz]) - np.array(offset))
+          for rx, ry, rz in zip(*r)]
+    sns.displot(ds)
+    plt.title("Density plot for distance from offset")
+    plt.xlabel("distance from offset (m)")
+    plt.ylabel("density")
+    plt.savefig("reciever_distances_from_origin.png")
+    return ds
+
+
+def plot_time_rir(rir, points, f, rt60, save=None):
     """
     Plot room impulse repsonse in the time domain.
 
     Args:
         rir (list[complex]) : A pressure wave in the frequency domain.
         points (int): The number of points.
+        rt60 (float): The reverberation time (RT60) of the room.
         f (int) : Sampling rate (Hz)
-        save (bool) : Whether to save the plot.
+        save (str, optional) : Save the plot to a file.
     """
-    length = points / 8  # Length of sample (ms)
-    t = np.linspace(0, length, points)
+    # length = points / 8  # Length of sample (ms)
+    t = np.linspace(0, rt60, points)
     plt.figure(figsize=(4, 4))
     plt.stem(t, rir, 'b', markerfmt=" ", basefmt="-b")
-    plt.xlabel("Time (ms)")
+    plt.xlabel("Time (s)")
     plt.ylabel("Pressure (Pa)")
     plt.grid()
     # plt.ylim(-1, 1)
-    plt.xlim(0, length)
+    plt.xlim(0, rt60)  # Show until 1 second
     plt.text(0.5, 0.9, "Impulse Response", horizontalalignment='center',
              verticalalignment='center', transform=plt.gca().transAxes)
     plt.text(0.5, 0.1, f"{points} points \n{f//1000} kHz sampling rate",
              horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes)
     if save:
-        plt.savefig(f"timerir.png", dpi=300)
+        plt.savefig(save, dpi=300)
     plt.show()
 
 
-def plot_frequency_rir(rir, points, frequency, save=False):
+def plot_frequency_rir(rir, points, frequency, save=None):
     """
     Plot room impulse repsonse in the frequency domain.
 
@@ -129,7 +197,7 @@ def plot_frequency_rir(rir, points, frequency, save=False):
         rir (list[complex]) : A pressure wave in the frequency domain.
         points (int): The number of points.
         frequency (int) : Sampling rate (Hz)
-        save (bool) : Whether to save the plot.
+        save (str, optional) : Path to save file to. Defaults to None.
     """
     fs = np.linspace(0, frequency, points)
     plt.figure(figsize=(4, 4))
@@ -143,5 +211,5 @@ def plot_frequency_rir(rir, points, frequency, save=False):
     plt.text(0.5, 0.1, f"{points} points \n{frequency//1000} kHz sampling rate",
              horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes)
     if save:
-        plt.savefig(f"freqrir.png", dpi=300)
+        plt.savefig(save, dpi=300)
     plt.show()
