@@ -31,6 +31,7 @@ n_rooms = 1
 n_receivers = 1
 
 e_absorption = np.sqrt(1 - 0.92)
+print(f"e_absorption: {e_absorption}")
 
 for i in range(n_rooms):
     room = pra.ShoeBox(
