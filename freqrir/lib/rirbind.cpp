@@ -1,3 +1,6 @@
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h> // This is required for more complex type casts between C++ and Python (i.e. std::vector<double> to list)
+
 /*
 Program     : Room Impulse Response Generator
  
@@ -54,7 +57,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#include "rirgen.h"
+#include "rirbind.hpp"
 
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -273,8 +276,6 @@ std::vector< std::vector<double> > gen_rir(double c, double fs, const std::vecto
 		n2 = (int) ceil(nSamples/(2*L[1]));
 		n3 = (int) ceil(nSamples/(2*L[2]));
 
-        int image_count = 0;
-
 		// Generate room impulse response
 		for (mx = -n1 ; mx <= n1 ; mx++)
 		{
@@ -310,7 +311,6 @@ std::vector< std::vector<double> > gen_rir(double c, double fs, const std::vecto
 									fdist = floor(dist);
 									if (fdist < nSamples)
 									{
-                                        image_count = image_count + 1;
 										gain = sim_microphone(Rp_plus_Rm[0], Rp_plus_Rm[1], Rp_plus_Rm[2], angle, microphone_type)
 											* refl[0]*refl[1]*refl[2]/(4*M_PI*dist*cTs);
 
@@ -343,8 +343,6 @@ std::vector< std::vector<double> > gen_rir(double c, double fs, const std::vecto
 				imp[idxMicrophone][idx] = Y[0] + A1*Y[1] + R1*Y[2];
 			}
 		}
-        // Print the image count to stout. 
-        printf("Image count: %d\n",image_count);
 	}
 	
 	delete[] Y;
@@ -356,39 +354,23 @@ std::vector< std::vector<double> > gen_rir(double c, double fs, const std::vecto
 	return imp;
 }
 
-int main() {
-    double c = 343.0; // Speed of sound (m/s). 
-    double sampling_rate = 16000; // Sampling rate (Hz).
-    
-    std::vector<double> source{2., 3., 2.};
-    std::vector<double> room_dimensions{3.2, 4, 2.7};
-    std::vector<double> betas{0.92, 0.92, 0.92, 0.92, 0.92, 0.92};
-    std::vector<double> orientation{0,0};
-    int nSamples = 783;
-    int isHighPassFilter = 1;
-    int nDimensions = 3;
-    char microphone_type = 'o'; // Omnidirectional microphone.
-    
-    int rooms = 1000;
-    int n_receivers = 5; 
-    int nOrder = 1;
+// 2022-02-12: Jesse Wood
+// This compiles the c++ code for the rir generator into a shared library that is accessible through python. 
+// To compile this code run:
+// 
+// ```bash
+// c++ -O3 -Wall -shared -std=c++11 -fPIC $(python3 -m pybind11 --includes) rirbind.cpp -o rirbind$(python3-config --extension-suffix)
+// ```
+//
+// Examples:
+// ```bash 
+// $ python3 
+// >>> import example
+// >>> example.gen_rir(343.0, 1600, [[1,1,1]], [1,2,2], [3,3,3], [0.9]*6, [0,0], 1, 3 , -1, 2048, 'o')
+// ```
+//
 
-    std::vector<std::vector<double>> receivers;
-    for (int i = 0; i < n_receivers; i++) {
-        receivers.push_back(std::vector<double>{1.1, 1, 1.2});
-    }
-
-    std::vector<std::vector<double>> rir;
-    for (int i = 0; i < rooms; i++) {
-         rir = gen_rir(c, sampling_rate, receivers, source, room_dimensions, betas, orientation, isHighPassFilter, nDimensions, nOrder, nSamples, microphone_type);
-    }
-
-    // for (std::vector<double> vect1D : rir)
-    // {
-    //     for (double x : vect1D)
-    //     {
-    //         std::cout << x << " ";
-    //     }   
-    //     std::cout << std::endl;
-    // }
+PYBIND11_MODULE(rirbind, m) {
+    m.doc() = "Computes the response of an acoustic source to one or more microphones in a reverberant room using the image method [1,2]."; // optional module docstring
+    m.def("gen_rir", &gen_rir, "A function that computes a room impulse repsonse.");
 }

@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from . freqrir import frequency_rir, frequency_rir_m
-from . helper import meters_to_sample_periods
+from freqrir.freqrir import frequency_rir, frequency_rir_m
+from freqrir.helper import meters_to_sample_periods
+import freqrir.lib.rirbind as rb
 
 
 def sample_random_receiver_locations(n, radius, offset=[0, 0, 0]):
@@ -71,24 +72,24 @@ def distance_from_offset(r, offset=[0, 0, 0]):
     return ds
 
 
-source = np.array([30, 100, 40])
-betas = np.reshape([0.9, 0.9, 0.9, 0.9, 0.7, 0.7], (3, 2))
+source = np.array([2, 3, 2])
+betas = np.array([0.9, 0.9, 0.9, 0.9, 0.7, 0.7])
 sample_frequency = 8000
 frequency = 1000  # Hz
 points = 783
 radius = 1  # Meter
-offset = [2, 2, 2]
+offset = [1, 1, 1]
 
-n_rooms = 10
-n_receivers = 5
+n_rooms = 1000
+n_receivers = 10
 order = 1
 data = []
 
 r = sample_random_receiver_locations(n_receivers, radius, offset)
-room_dimensions = np.random.uniform(100, 300, (n_rooms, 3))
+room_dimensions = np.random.uniform(3, 5, (n_rooms, 3))
 
 for i in range(n_rooms):
     room_dimension = room_dimensions[i]
-    rir = frequency_rir_m(r, source, room_dimension,
-                          betas, points, sample_frequency, frequency, order=order)
+    rir = rb.gen_rir(343.0, sample_frequency, r, source,
+                     room_dimension, betas, [0, 0], 1, 3, order, points, 'o')
     data.append((r, rir))

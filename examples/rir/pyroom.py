@@ -6,7 +6,6 @@ The audio sample with the reverb added is saved back to `examples/samples/guitar
 """
 import matplotlib.pyplot as plt
 import numpy as np
-
 import pyroomacoustics as pra
 
 if __name__ == "__main__":
@@ -39,14 +38,4 @@ if __name__ == "__main__":
 
     plot = False
     if plot:
-        plt.figure()
-        rir_1_0 = room.rir[1][0]
-
-        plt.subplot(2, 1, 1)
-        plt.plot(np.arange(len(rir_1_0)) / room.fs, rir_1_0)
-        plt.title("The RIR from source 0 to mic 1")
-        plt.xlabel("Time [s]")
-
-        plt.tight_layout()
-        plt.savefig("pyroom_rir.png")
-        plt.show()
+        room.plot_rir(0)
