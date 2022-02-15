@@ -55,11 +55,11 @@ for n_receivers in range(1, 5):
         rirs = [np.fft.fft(room.rir[i][0]) for i in range(n_receivers)]
         py_end = time.time()
 
-        tr_start = time.time()
-        rir = time_rir(receivers, source, room_dimensions, betas, points,
-                       sample_frequency, order=max_order, c=304.8)
-        rirs = [np.fft.fft(rir[i]) for i in range(n_receivers)]
-        tr_end = time.time()
+        # tr_start = time.time()
+        # rir = time_rir(receivers, source, room_dimensions, betas, points,
+        #                sample_frequency, order=max_order, c=304.8)
+        # rirs = [np.fft.fft(rir[i]) for i in range(n_receivers)]
+        # tr_end = time.time()
 
         fr_start = time.time()
         rir = frequency_rir(receivers, source, room_dimensions,
@@ -67,10 +67,11 @@ for n_receivers in range(1, 5):
         fr_end = time.time()
 
         py_times.append(py_end - py_start)
-        tr_times.append(tr_end - tr_start)
+        # tr_times.append(tr_end - tr_start)
         fr_times.append(fr_end - fr_start)
 
-    print(f"n_receiv: {n_receivers}, pyroomacoustics: {np.mean(py_times)} +/- {np.std(py_times)} s, freqrir: {np.mean(fr_times)} +/- {np.std(fr_times)} s, timerir: {np.mean(tr_times)} +/- {np.std(tr_times)} s")
+    # print(f"n_receiv: {n_receivers}, pyroomacoustics: {np.mean(py_times)} +/- {np.std(py_times)} s, freqrir: {np.mean(fr_times)} +/- {np.std(fr_times)} s, timerir: {np.mean(tr_times)} +/- {np.std(tr_times)} s")
+    print(f"n_receiv: {n_receivers}, pyroomacoustics: {np.mean(py_times)} +/- {np.std(py_times)} s, freqrir: {np.mean(fr_times)} +/- {np.std(fr_times)} s")
 
 rir = time_rir(receivers, source, room_dimensions, betas, points,
                sample_frequency, order=max_order, c=304.8)

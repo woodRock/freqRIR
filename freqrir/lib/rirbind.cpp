@@ -520,9 +520,9 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 	double refl[6];		// Absorption coefficient
 	double fdist, dist; // Distance between source and receiver, meters and seconds, respectively.
 
-	int n1, n2, n3; // +/- image order along x, y, and z axes.
+	int n1, n2, n3; // Image order +/- range along x, y, and z axes.
 	int q, j, k;	// Integer vector triplet.
-	int mx, my, mz; // Image order along the x,y,z axis.
+	int mx, my, mz; // Image order index along the x,y,z axis.
 
 	// Convert measurements from meters to sample periods.
 	s[0] = ss[0] / cTs;
@@ -573,6 +573,7 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 									fdist = floor(dist);  // Time delay sample periods (s).
 									if (fdist < nSamples) // Check impulse will reach the source within the sample length.
 									{
+										// Only compute when necessary.
 										refl[3] = pow(beta[0], std::abs(mx - q)) * refl[0];
 										refl[4] = pow(beta[2], std::abs(my - j)) * refl[1];
 										refl[5] = pow(beta[4], std::abs(mz - k)) * refl[2];
