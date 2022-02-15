@@ -124,7 +124,7 @@ double sim_microphone(double x, double y, double z, double *angle, char mtype)
 	}
 }
 
-std::vector<std::vector<double>> gen_rir(double c, double fs, const std::vector<std::vector<double>> &rr, const std::vector<double> &ss, const std::vector<double> &LL, const std::vector<double> &beta_input, const std::vector<double> &orientation, int isHighPassFilter, int nDimension, int nOrder, int nSamples, char microphone_type)
+std::vector<std::vector<double>> time_rir(double c, double fs, const std::vector<std::vector<double>> &rr, const std::vector<double> &ss, const std::vector<double> &LL, const std::vector<double> &beta_input, const std::vector<double> &orientation, int isHighPassFilter, int nDimension, int nOrder, int nSamples, char microphone_type)
 {
 	// | Room Impulse Response Generator                                  |\n"
 	// |                                                                  |\n"
@@ -503,16 +503,15 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 		nSamples = (int)(reverberation_time * fs);
 	}
 
-	// Create output vector - Initialize impulse to 0 + 0j.
+	// Output array.
 	std::vector<std::complex<double>> imp(nMicrophones);
-	std::complex<double> zero(0, 0);
-	for (int idxMicrophone = 0; idxMicrophone < nMicrophones; idxMicrophone++)
-		imp[idxMicrophone] = zero;
-
-	const std::complex<double> i(0, 1); // i = sqrt(-1)
 
 	// Temporary variables and constants (image-method)
-	const double cTs = c / fs; // Conversion term: Speed of sound (c) * Sample periods (T) = Speed of sound (c) / Sample frequency (fs).
+	const double w = 2 * M_PI * f;						// Frequency variable in radians.
+	double t, d, b;										// Time delay (s), distance (m), absortion coefficient.
+	std::complex<double> attenuation, time_shift, gain; // Attenuation factor A(.) and time delay T(.), product of A(.) x T(.),
+	const std::complex<double> i(0, 1);					// i = sqrt(-1)
+	const double cTs = c / fs;							// Conversion term: Speed of sound (c) * Sample periods (T) = Speed of sound (c) / Sample frequency (fs).
 	double *r = new double[3];
 	double *s = new double[3];
 	double *L = new double[3];
@@ -524,12 +523,8 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 	int n1, n2, n3; // +/- image order along x, y, and z axes.
 	int q, j, k;	// Integer vector triplet.
 	int mx, my, mz; // Image order along the x,y,z axis.
-	int n;
-	const double w = 2 * M_PI * f; // Frequency variable in radians.
-	double t, d, b;				   // Time delay (s), distance (m), absortion coefficient.
-	std::complex<double> gain;
-	std::complex<double> attenuation, time_shift; // A(.) and T(.).
 
+	// Convert measurements from meters to sample periods.
 	s[0] = ss[0] / cTs;
 	s[1] = ss[1] / cTs;
 	s[2] = ss[2] / cTs;
@@ -540,15 +535,16 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 	for (int idxMicrophone = 0; idxMicrophone < nMicrophones; idxMicrophone++)
 	{
 		// [x_1 x_2 ... x_N y_1 y_2 ... y_N z_1 z_2 ... z_N]
+		// Convert measurements from meters to sample periods.
 		r[0] = rr[idxMicrophone][0] / cTs;
 		r[1] = rr[idxMicrophone][1] / cTs;
 		r[2] = rr[idxMicrophone][2] / cTs;
 
+		// Order of reflections in each axis.
 		n1 = (int)ceil(nSamples / (2 * L[0]));
 		n2 = (int)ceil(nSamples / (2 * L[1]));
 		n3 = (int)ceil(nSamples / (2 * L[2]));
 
-		int image_count = 0;
 		// Generate room impulse response
 		for (mx = -n1; mx <= n1; mx++)
 		{
@@ -574,16 +570,19 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 								dist = sqrt(pow(Rp_plus_Rm[0], 2) + pow(Rp_plus_Rm[1], 2) + pow(Rp_plus_Rm[2], 2));
 								if (std::abs(2 * mx - q) + std::abs(2 * my - j) + std::abs(2 * mz - k) <= nOrder || nOrder == -1)
 								{
-									fdist = floor(dist);
-									if (fdist < nSamples)
+									fdist = floor(dist);  // Time delay sample periods.
+									if (fdist < nSamples) // Check impulse will reach the source within the sample length.
 									{
 										d = dist * cTs;					 // Distance in meters
 										t = d / c;						 // Time delay in seconds.
 										b = refl[0] * refl[1] * refl[2]; // Absorbtion coefficients.
+
+										// For a omnidirectional microphone type the default gain value is 1.
 										attenuation = sim_microphone(Rp_plus_Rm[0], Rp_plus_Rm[1], Rp_plus_Rm[2], angle, microphone_type) * b / (4 * M_PI * d);
+										// attenuation = b / (4 * M_PI * d);
 										time_shift = exp(-i * w * t);
 										gain = attenuation * time_shift;
-										imp[idxMicrophone] = imp[idxMicrophone] + gain;
+										imp[idxMicrophone] = gain;
 									}
 								}
 							}
@@ -594,6 +593,7 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 		}
 	}
 
+	// Clean up memory.
 	delete[] r;
 	delete[] s;
 	delete[] L;
@@ -620,6 +620,6 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 PYBIND11_MODULE(rirbind, m)
 {
 	m.doc() = "Computes the response of an acoustic source to one or more microphones in a reverberant room using the image method [1,2]."; // optional module docstring
-	m.def("gen_rir", &gen_rir, "A function that computes a room impulse repsonse.");
+	m.def("time_rir", &time_rir, "A function that computes a room impulse repsonse in the time domain.");
 	m.def("freq_rir", &freq_rir, "A function that computes a room impulse repsonse in the frequency domain.");
 }

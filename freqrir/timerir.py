@@ -1,5 +1,5 @@
 import numpy as np
-from rirbind import gen_rir
+from rirbind import time_rir
 from . helper import distance_for_permutations, plot_time_rir
 
 
@@ -32,43 +32,10 @@ def time_rir(receivers, source, room_dimensions, betas, points, sample_frequency
     isHighPass = 1  # High-pass filter is applied or not.
     nDimensions = 3  # 2d or 3d.
 
-    rir = gen_rir(c, sample_frequency, receivers, source,
-                  room_dimensions, betas, angle, isHighPass, nDimensions, order, points, direction)
+    rir = time_rir(c, sample_frequency, receivers, source,
+                   room_dimensions, betas, angle, isHighPass, nDimensions, order, points, direction)
 
     return rir
-
-
-def high_pass_filter(pressures, points, sample_frequency):
-    """
-    High-pass digital filter to wierd behaviour at low frequencies (i.e. 100 Hz).
-
-    Args:
-        pressures (list[complex]) : Pressure wave in the time domain.
-        points (int) : The number of points.
-        sample_frequency (float) : Sampling frequency or sampling rate (Hz).
-    Returns:
-        pressures (list[complex]): Pressure wave with frequencies below cutoff removed.
-    """
-
-    F = 0.01 * sample_frequency  # 0.01 of the sampling frequency (Allen 1979).
-    W = 2 * np.pi * F  # Frequency variable (radians).
-    T = 1E-4  # Time (s)
-    R1 = np.exp(-W*T)
-    R2 = R1
-    B1 = 2. * R1 * np.cos(W * T)
-    B2 = -R1 * R1
-    A1 = -(1. + R2)
-    A2 = R2
-    Y1 = 0
-    Y2 = 0
-    Y0 = 0
-    for I in range(0, points):
-        X0 = pressures[I]
-        pressures[I] = Y0 + A1 * Y1 + A2 * Y2
-        Y2 = Y1
-        Y1 = Y0
-        Y0 = B1 * Y1 + B2 * Y2 + X0
-    return pressures
 
 
 def time_rir_slow(receiver, source, room_dimensions, betas, points, sample_frequency, c=304.8):
@@ -172,16 +139,3 @@ def high_pass_filter(pressures, points, sample_frequency):
         Y1 = Y0
         Y0 = B1 * Y1 + B2 * Y2 + X0
     return pressures
-
-
-if __name__ == "__main__":
-    # All measuresments are given in terms of sample periods (i.e. ΔR = cT) (Allen 1979)
-    room_dimensions = np.array([80, 120, 100])
-    source = np.array([30, 100, 40])
-    receiver = np.array([50, 10, 60])
-    betas = np.reshape([0.9, 0.9, 0.9, 0.9, 0.7, 0.7], (3, 2))
-    points = 2048
-    sample_frequency = 8000  # Sampling rate (Hz)
-    rir = time_rir(receiver, source, room_dimensions,
-                   betas, points, sample_frequency)
-    plot_time_rir(rir, points, sample_frequency, save=True)

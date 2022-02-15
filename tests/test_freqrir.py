@@ -39,5 +39,3 @@ class TestFreqrir(unittest.TestCase):
         betas = [0.92] * 6
         rir = frequency_rir(receivers, source, room_dimensions,
                             betas, points, sample_frequency, frequency)
-        print(f"Recievers: {receivers}")
-        print(f"rir: {np.unique(rir)}")
