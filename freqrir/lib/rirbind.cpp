@@ -548,15 +548,15 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 		// Generate room impulse response
 		for (mx = -n1; mx <= n1; mx++)
 		{
-			refl[0] = pow(beta[1], std::abs(mx)); // Absorption coefficient.
+			refl[0] = pow(beta[1], std::abs(mx));
 			Rm[0] = 2 * mx * L[0];
 			for (my = -n2; my <= n2; my++)
 			{
-				refl[1] = pow(beta[3], std::abs(my)); // Absorption coefficient.
+				refl[1] = pow(beta[3], std::abs(my));
 				Rm[1] = 2 * my * L[1];
 				for (mz = -n3; mz <= n3; mz++)
 				{
-					refl[2] = pow(beta[5], std::abs(mz)); // Absorption coefficient.
+					refl[2] = pow(beta[5], std::abs(mz));
 					Rm[2] = 2 * mz * L[2];
 					for (q = 0; q <= 1; q++)
 					{
@@ -570,15 +570,15 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 								dist = sqrt(pow(Rp_plus_Rm[0], 2) + pow(Rp_plus_Rm[1], 2) + pow(Rp_plus_Rm[2], 2));
 								if (std::abs(2 * mx - q) + std::abs(2 * my - j) + std::abs(2 * mz - k) <= nOrder || nOrder == -1)
 								{
-									fdist = floor(dist);  // Time delay sample periods.
+									fdist = floor(dist);  // Time delay sample periods (s).
 									if (fdist < nSamples) // Check impulse will reach the source within the sample length.
 									{
-										refl[3] = pow(beta[0], std::abs(mx - q)) * refl[0]; // Absorption coefficient.
-										refl[4] = pow(beta[2], std::abs(my - j)) * refl[1]; // Absorption coefficient.
-										refl[5] = pow(beta[4], std::abs(mz - k)) * refl[2]; // Absorption coefficient.
-										b = refl[3] * refl[4] * refl[5];					// Absorption coefficient.
-										d = dist * cTs;										// Distance in meters (m).
-										t = d / c;											// Time delay in seconds (s).
+										refl[3] = pow(beta[0], std::abs(mx - q)) * refl[0];
+										refl[4] = pow(beta[2], std::abs(my - j)) * refl[1];
+										refl[5] = pow(beta[4], std::abs(mz - k)) * refl[2];
+										b = refl[3] * refl[4] * refl[5]; // Absorption coefficient.
+										d = dist * cTs;					 // Distance in meters (m).
+										t = d / c;						 // Time delay in seconds (s).
 										attenuation = sim_microphone(Rp_plus_Rm[0], Rp_plus_Rm[1], Rp_plus_Rm[2], angle, microphone_type) * b / (4 * M_PI * d);
 										time_shift = exp(-i * w * t);
 										gain = attenuation * time_shift;
