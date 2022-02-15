@@ -275,9 +275,10 @@ std::vector<std::vector<double>> time_rir(double c, double fs, const std::vector
 	double *L = new double[3];
 	double Rm[3];
 	double Rp_plus_Rm[3];
-	double refl[3];
+	double refl[6];
 	double fdist, dist;
 	double gain;
+	double b, d; // Beta absorbtion coefficient, distance.
 	int startPosition;
 	int n1, n2, n3;
 	int q, j, k;
@@ -305,39 +306,38 @@ std::vector<std::vector<double>> time_rir(double c, double fs, const std::vector
 		// Generate room impulse response
 		for (mx = -n1; mx <= n1; mx++)
 		{
+			refl[0] = pow(beta[1], std::abs(mx));
 			Rm[0] = 2 * mx * L[0];
-
 			for (my = -n2; my <= n2; my++)
 			{
+				refl[1] = pow(beta[3], std::abs(my));
 				Rm[1] = 2 * my * L[1];
-
 				for (mz = -n3; mz <= n3; mz++)
 				{
+					refl[2] = pow(beta[5], std::abs(mz));
 					Rm[2] = 2 * mz * L[2];
-
 					for (q = 0; q <= 1; q++)
 					{
 						Rp_plus_Rm[0] = (1 - 2 * q) * s[0] - r[0] + Rm[0];
-						refl[0] = pow(beta[0], std::abs(mx - q)) * pow(beta[1], std::abs(mx));
-
 						for (j = 0; j <= 1; j++)
 						{
 							Rp_plus_Rm[1] = (1 - 2 * j) * s[1] - r[1] + Rm[1];
-							refl[1] = pow(beta[2], std::abs(my - j)) * pow(beta[3], std::abs(my));
-
 							for (k = 0; k <= 1; k++)
 							{
 								Rp_plus_Rm[2] = (1 - 2 * k) * s[2] - r[2] + Rm[2];
-								refl[2] = pow(beta[4], std::abs(mz - k)) * pow(beta[5], std::abs(mz));
-
 								dist = sqrt(pow(Rp_plus_Rm[0], 2) + pow(Rp_plus_Rm[1], 2) + pow(Rp_plus_Rm[2], 2));
-
 								if (std::abs(2 * mx - q) + std::abs(2 * my - j) + std::abs(2 * mz - k) <= nOrder || nOrder == -1)
 								{
 									fdist = floor(dist);
 									if (fdist < nSamples)
 									{
-										gain = sim_microphone(Rp_plus_Rm[0], Rp_plus_Rm[1], Rp_plus_Rm[2], angle, microphone_type) * refl[0] * refl[1] * refl[2] / (4 * M_PI * dist * cTs);
+										// Only compute when necessary.
+										refl[3] = pow(beta[0], std::abs(mx - q)) * refl[0];
+										refl[4] = pow(beta[2], std::abs(my - j)) * refl[1];
+										refl[5] = pow(beta[4], std::abs(mz - k)) * refl[2];
+										b = refl[4] * refl[5] * refl[6]; // Absorbtion coefficient.
+										d = dist * cTs;					 // Distance in meters (s)
+										gain = sim_microphone(Rp_plus_Rm[0], Rp_plus_Rm[1], Rp_plus_Rm[2], angle, microphone_type) * b / (4 * M_PI * d);
 
 										for (n = 0; n < Tw; n++)
 											LPI[n] = 0.5 * (1 - cos(2 * M_PI * ((n + 1 - (dist - fdist)) / Tw))) * Fc * sinc(M_PI * Fc * (n + 1 - (dist - fdist) - (Tw / 2)));
@@ -355,7 +355,7 @@ std::vector<std::vector<double>> time_rir(double c, double fs, const std::vector
 			}
 		}
 
-		// 'Original' high-pass filter as proposed by Allen and Berkley.
+		// 'Original' high-pass filter as proposed (Allen 1979).
 		if (isHighPassFilter == 1)
 		{
 			for (int idx = 0; idx < 3; idx++)
