@@ -67,4 +67,4 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = []
 
 # 2022-02-12: Mock imports for rirbind. This library is compiled from c++ code, readthedocs can't do that.
-autodoc_mock_imports = ["rirbind"]
+autodoc_mock_imports = ["rirbind, pyroomacoustics"]
