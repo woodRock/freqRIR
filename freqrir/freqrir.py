@@ -1,6 +1,6 @@
 import numpy as np
 from . helper import distance_for_permutations, sample_period_to_meters
-from rirbind import freq_rir
+import rirbind as rb
 
 
 def frequency_rir(receivers, source, room_dimensions, betas, points, sample_frequency, frequency, c=304.8, T=1E-4, order=-1):
@@ -35,7 +35,7 @@ def frequency_rir(receivers, source, room_dimensions, betas, points, sample_freq
     isHighPass = 1  # High-pass filter is applied or not.
     nDimensions = 3  # 2d or 3d.
 
-    rir = freq_rir(c, sample_frequency, frequency, receivers, source,
-                   room_dimensions, betas, angle, isHighPass, nDimensions, order, points, direction)
+    rir = rb.freq_rir(c, sample_frequency, frequency, receivers, source,
+                      room_dimensions, betas, angle, isHighPass, nDimensions, order, points, direction)
 
     return rir

@@ -507,17 +507,17 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 	std::vector<std::complex<double>> imp(nMicrophones);
 
 	// Temporary variables and constants (image-method)
+	const std::complex<double> i(0, 1);					// i = sqrt(-1)
 	const double w = 2 * M_PI * f;						// Frequency variable in radians.
 	double t, d, b;										// Time delay (s), distance (m), absortion coefficient.
 	std::complex<double> attenuation, time_shift, gain; // Attenuation factor A(.) and time delay T(.), product of A(.) x T(.),
-	const std::complex<double> i(0, 1);					// i = sqrt(-1)
 	const double cTs = c / fs;							// Conversion term: Speed of sound (c) * Sample periods (T) = Speed of sound (c) / Sample frequency (fs).
 	double *r = new double[3];
 	double *s = new double[3];
 	double *L = new double[3];
 	double Rm[3];
 	double Rp_plus_Rm[3];
-	double refl[3];		// Absorption coefficient
+	double refl[6];		// Absorption coefficient
 	double fdist, dist; // Distance between source and receiver, meters and seconds, respectively.
 
 	int n1, n2, n3; // +/- image order along x, y, and z axes.
@@ -548,41 +548,41 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 		// Generate room impulse response
 		for (mx = -n1; mx <= n1; mx++)
 		{
+			refl[0] = pow(beta[1], std::abs(mx)); // Absorption coefficient.
 			Rm[0] = 2 * mx * L[0];
 			for (my = -n2; my <= n2; my++)
 			{
+				refl[1] = pow(beta[3], std::abs(my)); // Absorption coefficient.
 				Rm[1] = 2 * my * L[1];
 				for (mz = -n3; mz <= n3; mz++)
 				{
+					refl[2] = pow(beta[5], std::abs(mz)); // Absorption coefficient.
 					Rm[2] = 2 * mz * L[2];
 					for (q = 0; q <= 1; q++)
 					{
+						refl[3] = pow(beta[0], std::abs(mx - q)) * refl[0]; // Absorption coefficient.
 						Rp_plus_Rm[0] = (1 - 2 * q) * s[0] - r[0] + Rm[0];
-						refl[0] = pow(beta[0], std::abs(mx - q)) * pow(beta[1], std::abs(mx));
 						for (j = 0; j <= 1; j++)
 						{
+							refl[4] = pow(beta[2], std::abs(my - j)) * refl[1]; // Absorption coefficient.
 							Rp_plus_Rm[1] = (1 - 2 * j) * s[1] - r[1] + Rm[1];
-							refl[1] = pow(beta[2], std::abs(my - j)) * pow(beta[3], std::abs(my));
 							for (k = 0; k <= 1; k++)
 							{
+								refl[5] = pow(beta[4], std::abs(mz - k)) * refl[2]; // Absorption coefficient.
 								Rp_plus_Rm[2] = (1 - 2 * k) * s[2] - r[2] + Rm[2];
-								refl[2] = pow(beta[4], std::abs(mz - k)) * pow(beta[5], std::abs(mz));
 								dist = sqrt(pow(Rp_plus_Rm[0], 2) + pow(Rp_plus_Rm[1], 2) + pow(Rp_plus_Rm[2], 2));
 								if (std::abs(2 * mx - q) + std::abs(2 * my - j) + std::abs(2 * mz - k) <= nOrder || nOrder == -1)
 								{
 									fdist = floor(dist);  // Time delay sample periods.
 									if (fdist < nSamples) // Check impulse will reach the source within the sample length.
 									{
-										d = dist * cTs;					 // Distance in meters
-										t = d / c;						 // Time delay in seconds.
-										b = refl[0] * refl[1] * refl[2]; // Absorbtion coefficients.
-
-										// For a omnidirectional microphone type the default gain value is 1.
+										b = refl[3] * refl[4] * refl[5]; // Absorption coefficient.
+										d = dist * cTs;					 // Distance in meters (m).
+										t = d / c;						 // Time delay in seconds (s).
 										attenuation = sim_microphone(Rp_plus_Rm[0], Rp_plus_Rm[1], Rp_plus_Rm[2], angle, microphone_type) * b / (4 * M_PI * d);
-										// attenuation = b / (4 * M_PI * d);
 										time_shift = exp(-i * w * t);
 										gain = attenuation * time_shift;
-										imp[idxMicrophone] = gain;
+										imp[idxMicrophone] = imp[idxMicrophone] + gain;
 									}
 								}
 							}

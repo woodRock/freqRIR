@@ -1,6 +1,6 @@
 import numpy as np
-from rirbind import time_rir
-from . helper import distance_for_permutations, plot_time_rir
+import rirbind as rb
+from . helper import distance_for_permutations
 
 
 def time_rir(receivers, source, room_dimensions, betas, points, sample_frequency, order=-1, c=304.8):
@@ -32,8 +32,8 @@ def time_rir(receivers, source, room_dimensions, betas, points, sample_frequency
     isHighPass = 1  # High-pass filter is applied or not.
     nDimensions = 3  # 2d or 3d.
 
-    rir = time_rir(c, sample_frequency, receivers, source,
-                   room_dimensions, betas, angle, isHighPass, nDimensions, order, points, direction)
+    rir = rb.time_rir(c, sample_frequency, receivers, source,
+                      room_dimensions, betas, angle, isHighPass, nDimensions, order, points, direction)
 
     return rir
 
