@@ -613,8 +613,9 @@ std::vector<std::complex<double>> freq_rir(double c, double fs, double f, const 
 // Examples:
 // ```bash
 // $ python3
-// >>> import example
-// >>> example.gen_rir(343.0, 1600, [[1,1,1]], [1,2,2], [3,3,3], [0.9]*6, [0,0], 1, 3 , -1, 2048, 'o')
+// >>> import rirbind
+// >>> rirbind.time_rir(343.0, 16000, [[1,1,1]], [1,2,2], [3,3,3], [0.9]*6, [0,0], 1, 3 , -1, 2048, 'o')
+// >>> rirbind.freq_rir(343.0, 16000, 1000, [[1,1,1]], [1,2,2], [3,3,3], [0.9]*6, [0,0], 1, 3 , -1, 2048, 'o')
 // ```
 //
 
