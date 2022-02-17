@@ -57,6 +57,10 @@ References
    model.” The Journal of the Acoustical Society of America 124.1
    (2008): 269-277.
    `Available <https://asa.scitation.org/doi/full/10.1121/1.2936367>`__
+3. Peterson, P. M. (1986). Simulating the response of multiple microphones 
+   to a single acoustic source in a reverberant room. The Journal of the 
+   Acoustical Society of America, 80(5), 1527-1529.
+   `Available <https://asa.scitation.org/doi/abs/10.1121/1.394357>`__
 
 .. |Documentation Status| image:: https://readthedocs.org/projects/freqrir/badge/?version=latest
    :target: https://freqrir.readthedocs.io/en/latest/?badge=latest
