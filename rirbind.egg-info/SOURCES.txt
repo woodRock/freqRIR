@@ -1,0 +1,10 @@
+README.rst
+pyproject.toml
+setup.py
+freqrir/lib/rirbind.cpp
+rirbind.egg-info/PKG-INFO
+rirbind.egg-info/SOURCES.txt
+rirbind.egg-info/dependency_links.txt
+rirbind.egg-info/not-zip-safe
+rirbind.egg-info/requires.txt
+rirbind.egg-info/top_level.txt

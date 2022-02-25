@@ -32,18 +32,19 @@ ext_modules = [
                       ),
 ]
 
+long_description = open("README.rst").read()
+
 setup(
-    name="rirbind",
+    name="freqrir",
     version=__version__,
     author="Jesse Wood",
     author_email="j.r.h.wood98@gmail.com",
     url="https://github.com/woodRock/freqRIR",
     description="A room impulse response generator using pybind11",
-    long_description="",
+    long_description=long_description,
+    long_description_content_type="text/x-rst",
     ext_modules=ext_modules,
     extras_require={"test": "pytest"},
-    # Currently, build_ext only provides an optional "highest supported C++
-    # level" feature, but in the future it may provide more features.
     cmdclass={"build_ext": build_ext},
     zip_safe=False,
     python_requires=">=3.6",
