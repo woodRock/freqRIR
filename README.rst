@@ -28,7 +28,7 @@ Installation
 ------------
 
 This package has been published on 
-`pypi <https://pypi.org/project/freqrir/>__ 
+`pypi <https://pypi.org/project/freqrir/>`__ 
 , and can be installed easily through pip. To install it, run the following command:
 
 .. code:: bash
