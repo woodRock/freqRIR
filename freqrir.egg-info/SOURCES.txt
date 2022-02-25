@@ -1,6 +1,10 @@
 README.rst
 pyproject.toml
 setup.py
+freqrir/__init__.py
+freqrir/freqrir.py
+freqrir/helper.py
+freqrir/timerir.py
 freqrir.egg-info/PKG-INFO
 freqrir.egg-info/SOURCES.txt
 freqrir.egg-info/dependency_links.txt

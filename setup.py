@@ -24,7 +24,7 @@ from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import setup
 import sys
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 ext_modules = [
     Pybind11Extension("rirbind",
@@ -40,6 +40,8 @@ setup(
     version=__version__,
     author="Jesse Wood",
     author_email="j.r.h.wood98@gmail.com",
+    license="MIT",
+    packages=["freqrir"],
     url="https://github.com/woodRock/freqRIR",
     description="A room impulse response generator using pybind11",
     long_description=long_description,

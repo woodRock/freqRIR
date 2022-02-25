@@ -1,11 +1,11 @@
 Metadata-Version: 2.1
 Name: freqrir
-Version: 0.0.2
+Version: 0.0.3
 Summary: A room impulse response generator using pybind11
 Home-page: https://github.com/woodRock/freqRIR
 Author: Jesse Wood
 Author-email: j.r.h.wood98@gmail.com
-License: UNKNOWN
+License: MIT
 Platform: UNKNOWN
 Requires-Python: >=3.6
 Description-Content-Type: text/x-rst
@@ -40,13 +40,13 @@ coefficients were 0.7. Source and receiver were at (30, 100, 40) amd
 Installation
 ------------
 
-The python libraries necessary ro run this can be installed using
-pip as follows
+This package has been published on 
+`pypi <https://pypi.org/project/freqrir/>`__ 
+, and can be installed easily through pip. To install it, run the following command:
 
 .. code:: bash
 
-   $ pip install . 
-   $ pip install -r requirements.txt
+   $ pip install freqrir
 
 Testing
 -------
@@ -62,10 +62,10 @@ Publish Package
 --------------- 
 
 .. code:: bash 
-
+   $ rm -rf build
    $ python3 -m build # Build package into dist folder. 
-   $ mv dist/freqrir-0.0.1-cp39-cp39-linux_x86_64.whl dist/freqrir-0.0.1-cp39-none-manylinux1_x86_64.whl
-   $ python3 -m twine upload dist/* # Upload to PyPi
+   $ mv dist/freqrir-0.0.3-cp39-cp39-linux_x86_64.whl dist/freqrir-0.0.3-cp39-none-manylinux1_x86_64.whl
+   $ python3 -m twine upload dist/* --skip-existing # Upload to PyPi
 
 References
 ----------
