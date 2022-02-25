@@ -49,6 +49,7 @@ Publish Package
 --------------- 
 
 .. code:: bash 
+
    $ rm -rf build
    $ python3 -m build # Build package into dist folder. 
    $ mv dist/freqrir-0.0.3-cp39-cp39-linux_x86_64.whl dist/freqrir-0.0.3-cp39-none-manylinux1_x86_64.whl
