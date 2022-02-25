@@ -27,13 +27,13 @@ coefficients were 0.7. Source and receiver were at (30, 100, 40) amd
 Installation
 ------------
 
-The python libraries necessary ro run this can be installed using
-pip as follows
+This package has been published on 
+`pypi <https://pypi.org/project/freqrir/>__ 
+, and can be installed easily through pip. To install it, run the following command:
 
 .. code:: bash
 
-   $ pip install . 
-   $ pip install -r requirements.txt
+   $ pip install freqrir
 
 Testing
 -------
@@ -44,6 +44,15 @@ from the root directory
 .. code:: bash
 
    $ python -m unittest discover -s tests
+
+Publish Package 
+--------------- 
+
+.. code:: bash 
+
+   $ python3 -m build # Build package into dist folder. 
+   $ mv dist/freqrir-<VERSION>-cp39-cp39-linux_x86_64.whl dist/freqrir-<VERSION>-cp39-none-manylinux1_x86_64.whl
+   $ python3 -m twine upload dist/* # Upload to PyPi
 
 References
 ----------

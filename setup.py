@@ -22,8 +22,9 @@ The following command installs the `rirbind` package through pip. The packages `
 
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import setup
+import sys
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 ext_modules = [
     Pybind11Extension("rirbind",
