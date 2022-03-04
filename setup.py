@@ -21,10 +21,10 @@ The following command installs the `rirbind` package through pip. The packages `
 """
 
 from pybind11.setup_helpers import Pybind11Extension, build_ext
-from setuptools import setup
+from setuptools import setup, find_packages
 import sys
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 ext_modules = [
     Pybind11Extension("rirbind",
@@ -41,7 +41,7 @@ setup(
     author="Jesse Wood",
     author_email="j.r.h.wood98@gmail.com",
     license="MIT",
-    packages=["freqrir"],
+    packages=find_packages(),
     url="https://github.com/woodRock/freqRIR",
     description="A room impulse response generator using pybind11",
     long_description=long_description,

@@ -1,6 +1,8 @@
 README.rst
 pyproject.toml
 setup.py
+examples/__init__.py
+examples/pyroom.py
 freqrir/__init__.py
 freqrir/freqrir.py
 freqrir/helper.py
@@ -13,3 +15,7 @@ freqrir.egg-info/requires.txt
 freqrir.egg-info/top_level.txt
 freqrir/lib/rirbind.cpp
 freqrir/lib/rirbind.h
+tests/__init__.py
+tests/test_freqrir.py
+tests/test_helper.py
+tests/test_timerir.py
